@@ -69,21 +69,21 @@ module ScreenObject
     #pending implementation
   end
 
-  def scroll(direction)
+  def scroll(direction = :down, touch_count = 1, duration = 0)
     size = driver.driver.manage.window.size
-    height = size.height
+    height = size.heights
     width = size.width
     if direction != :up && direction != :down && direction != :left && direction != :right
-      CXA.output_text 'Only upwards and downwards left right scrolling is supported for now'
+      CXA.output_text 'Only upwards and downwards and leftwards and rightwards scrolling are supported for now'
     end
     if direction == :up
-      Appium::TouchAction.new(driver).swipe(start_x: (width / 2).to_int, start_y: (height / 4).to_int, end_x: (width / 2).to_int, end_y: (height/2) - 100).perform
+      Appium::TouchAction.new(driver).swipe(start_x: (width / 2).to_int, start_y: (height / 4).to_int, end_x: (width / 2).to_int, end_y: (height/2) - 100,:touchCount => touch_count,:duration => duration).perform
     elsif direction == :down
-      Appium::TouchAction.new(driver).swipe(start_x: (width / 2).to_int, start_y: (height / 4).to_int, end_x: (width / 2).to_int, end_y: 100).perform
+      Appium::TouchAction.new(driver).swipe(start_x: (width / 2).to_int, start_y: (height / 4).to_int, end_x: (width / 2).to_int, end_y: 100,:touchCount => touch_count,:duration => duration).perform
     elsif direction == :left
-      Appium::TouchAction.new(driver).swipe(start_x: (width - 600).to_int, start_y: (height / 2).to_int, end_x: (width/2).to_int, end_y: height / 2).perform
+      Appium::TouchAction.new(driver).swipe(start_x: (width - 600).to_int, start_y: (height / 2).to_int, end_x: (width/2).to_int, end_y: height / 2,:touchCount => touch_count,:duration => duration).perform
     else direction == :right
-    Appium::TouchAction.new(driver).swipe(start_x: 752, start_y: (height / 2).to_int, end_x: (width - 600).to_int, end_y: height / 2).perform
+    Appium::TouchAction.new(driver).swipe(start_x: 752, start_y: (height / 2).to_int, end_x: (width - 600).to_int, end_y: height / 2,:touchCount => touch_count,:duration => duration).perform
     end
   end
 
@@ -93,7 +93,7 @@ module ScreenObject
     y = scr['height'] / 2.8
     for i in 0..num_loop
       begin
-        if (driver.find_element(locator).displayed?)
+        if (driver.find_element(locator.locator).displayed?)
           break
         end
       rescue
@@ -101,18 +101,15 @@ module ScreenObject
         sleep post_timeout
         false
       end
-      raise("#{locator_value} is not displayed") if i==num_loop
+      raise("#{locator.locator} is not displayed") if i==num_loop
     end
   end
 
   def scroll_down_click(locator, post_timeout = 2, num_loop = 15)
-    size = driver.driver.manage.window.size
-    height = size.height
-    width = size.width
     for i in 0..num_loop
       begin
-        if (driver.find_element(locator,locator_value).displayed?)
-          driver.find_element(locator,locator_value).click
+        if (driver.find_element(locator.locator).displayed?)
+          driver.find_element(locator.locator).click
           break
         end
       rescue
@@ -127,7 +124,7 @@ module ScreenObject
   def scroll_up_find(locator, post_timeout = 2, num_loop = 15)
     for i in 0..num_loop
       begin
-        if (driver.find_element(locator,locator_value).displayed?)
+        if (driver.find_element(locator.locator).displayed?)
           break
         end
       rescue
@@ -140,18 +137,12 @@ module ScreenObject
   end
 
   def scroll_up_click(locator, post_timeout = 2, num_loop = 15)
-    scr = driver.window_size
-    screenHeightStart = (scr.height) * 0.5
-    scrollStart = screenHeightStart.to_i
-    screenHeightEnd = (scr.height) * 0.2
-    scrollEnd = screenHeightEnd.to_i
     for i in 0..num_loop
       begin
-        if (driver.find_element(locator).displayed?)
-          driver.find_element(locator).click
+        if (driver.find_element(locator.locator).displayed?)
+          driver.find_element(locator.locator).click
           break
         end
-      rescue
         scroll(:up)
         sleep post_timeout
         false
