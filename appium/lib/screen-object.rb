@@ -69,28 +69,42 @@ module ScreenObject
     #pending implementation
   end
 
-  def scroll(direction = :down, touch_count = 1, duration = 0)
-    size = driver.driver.manage.window.size
-    height = size.heights
-    width = size.width
+  def scroll(direction = :down, touch_count = 1, duration = 500)
+    size = driver.window_size
+    x = size.width/2
+    y = size.height/ 2.8
     if direction != :up && direction != :down && direction != :left && direction != :right
       CXA.output_text 'Only upwards and downwards and leftwards and rightwards scrolling are supported for now'
     end
     if direction == :up
-      Appium::TouchAction.new(driver).swipe(start_x: (width / 2).to_int, start_y: (height / 4).to_int, end_x: (width / 2).to_int, end_y: (height/2) - 100,:touchCount => touch_count,:duration => duration).perform
+      Appium::TouchAction.new(driver).swipe(start_x: (x), start_y: (y).to_int, end_x: (x), end_y: (y) - 100,:touchCount => touch_count,:duration => duration).perform
     elsif direction == :down
-      Appium::TouchAction.new(driver).swipe(start_x: (width / 2).to_int, start_y: (height / 4).to_int, end_x: (width / 2).to_int, end_y: 100,:touchCount => touch_count,:duration => duration).perform
+      Appium::TouchAction.new(driver).swipe(start_x: (x), start_y: (y).to_int, end_x: (x), end_y: 100,:touchCount => touch_count,:duration => duration).perform
     elsif direction == :left
-      Appium::TouchAction.new(driver).swipe(start_x: (width - 600).to_int, start_y: (height / 2).to_int, end_x: (width/2).to_int, end_y: height / 2,:touchCount => touch_count,:duration => duration).perform
+      Appium::TouchAction.new(driver).swipe(start_x: (x - 600), start_y: (height / 2), end_x: (x), end_y: height / 2,:touchCount => touch_count,:duration => duration).perform
     else direction == :right
-    Appium::TouchAction.new(driver).swipe(start_x: 752, start_y: (height / 2).to_int, end_x: (width - 600).to_int, end_y: height / 2,:touchCount => touch_count,:duration => duration).perform
+    Appium::TouchAction.new(driver).swipe(start_x: 752, start_y: (height / 2), end_x: (x - 600), end_y: y,:touchCount => touch_count,:duration => duration).perform
     end
   end
 
-  def scroll_find(locator, post_timeout = 2, direction = :down, num_loop = 15)
-    scr = driver.window_size
-    x = scr['width'] / 4
-    y = scr['height'] / 2.8
+  def scroll_to_text(text_val, direction = :down, num_loop = 15)
+    driver.manage.timeouts.implicit_wait = 1
+    for i in 0..num_loop
+      begin
+        if driver.find("#{text_val}").display.nil?
+          puts "found element #{text_val}"
+          break
+        end
+      rescue Selenium::WebDriver::Error::NoSuchElementError
+        scroll(direction)
+        false
+      end
+      raise("#{text_val} is not displayed") if i==num_loop
+    end
+  end
+
+  def scroll_find(locator, direction = :down, num_loop = 15)
+    driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
       begin
         if (driver.find_element(locator.locator).displayed?)
@@ -98,14 +112,14 @@ module ScreenObject
         end
       rescue
         scroll(direction)
-        sleep post_timeout
         false
       end
       raise("#{locator.locator} is not displayed") if i==num_loop
     end
   end
 
-  def scroll_down_click(locator, post_timeout = 2, num_loop = 15)
+  def scroll_down_click(locator, num_loop = 15)
+    driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
       begin
         if (driver.find_element(locator.locator).displayed?)
@@ -114,14 +128,14 @@ module ScreenObject
         end
       rescue
         scroll(:down)
-        sleep post_timeout
         false
       end
       raise("#{locator.locator} is not displayed") if i==num_loop
     end
   end
 
-  def scroll_up_find(locator, post_timeout = 2, num_loop = 15)
+  def scroll_up_find(locator, num_loop = 15)
+    driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
       begin
         if (driver.find_element(locator.locator).displayed?)
@@ -129,14 +143,13 @@ module ScreenObject
         end
       rescue
         scroll(:up)
-        sleep post_timeout
         false
       end
       raise("#{locator.locator} is not displayed") if i==num_loop
     end
   end
 
-  def scroll_up_click(locator, post_timeout = 2, num_loop = 15)
+  def scroll_up_click(locator, num_loop = 15)
     for i in 0..num_loop
       begin
         if (driver.find_element(locator.locator).displayed?)
@@ -144,7 +157,6 @@ module ScreenObject
           break
         end
         scroll(:up)
-        sleep post_timeout
         false
       end
       raise("#{locator.locator} is not displayed") if i==num_loop
