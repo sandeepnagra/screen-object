@@ -69,7 +69,7 @@ module ScreenObject
     #pending implementation
   end
 
-  def scroll(direction = :down, touch_count = 1, duration = 500)
+  def scroll(direction = :down, touch_count = 1, duration = 1000)
     size = driver.window_size
     x = size.width/2
     y = size.height/2
@@ -86,18 +86,20 @@ module ScreenObject
     Appium::TouchAction.new(driver).swipe(start_x: (x * 0.3), start_y: y, end_x: (x * 0.6), end_y: y,:touchCount => touch_count,:duration => duration).perform
     end
   end
-  def swipe_element(locator, direction = :down, touch_count = 1, duration = 500)
-    element = driver.find_element(locator.locator.first,locator.locator.last).size
-    x = element.width
-    y = element.height
+  def swipe_element(locator, direction = :down, touch_count = 1, duration = 1000)
+    element = driver.find_element(locator.locator.first,locator.locator.last).rect
+    start_x = element.x
+    end_x = element.x + element.width
+    start_y = element.y
+    end_y = element.y +  element.height
     if direction == :up
-      Appium::TouchAction.new(driver).swipe(start_x: (x), start_y: (y*0.5), end_x: x, end_y: y + (y*0.5),:touchCount => touch_count,:duration => duration).perform
+      Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.5, start_y: (start_y + (element.height * 0.2)), end_x: end_x * 0.5, end_y: (end_y - (element.height * 0.2)),:touchCount => touch_count,:duration => duration).perform
     elsif direction == :down
-      Appium::TouchAction.new(driver).swipe(start_x: (x), start_y: (y).to_int, end_x: (x), end_y: y * 0.5,:touchCount => touch_count,:duration => duration).perform
+      Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.5, start_y: (end_y - (element.height * 0.2)), end_x: start_x * 0.5, end_y: (start_y + (element.height * 0.3)),:touchCount => touch_count,:duration => duration).perform
     elsif direction == :left
-      Appium::TouchAction.new(driver).swipe(start_x: (x * 0.6), start_y: y, end_x: (x * 0.2), end_y: y,:touchCount => touch_count,:duration => duration).perform
+      Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.9, start_y: end_y - (element.height/2), end_x: start_x, end_y: end_y - (element.height/2),:touchCount => 2,:duration => 0).perform
     else direction == :right
-    Appium::TouchAction.new(driver).swipe(start_x: (x * 0.2), start_y: y, end_x: (x * 0.6), end_y: y,:touchCount => touch_count,:duration => duration).perform
+      Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.1, start_y: end_y - (element.height/2), end_x: end_x * 0.9, end_y: end_y - (element.height/2),:touchCount => 2,:duration => 0).perform
     end
 
   end
