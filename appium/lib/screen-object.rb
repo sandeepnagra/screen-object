@@ -69,42 +69,42 @@ module ScreenObject
     #pending implementation
   end
 
-  def scroll(direction = :down, touch_count = 1, duration = 1000)
+  def scroll(direction = 'down', touch_count = 1, duration = 1000)
     size = driver.window_size
     x = size.width/2
     y = size.height/2
-    if direction != :up && direction != :down && direction != :left && direction != :right
-      CXA.output_text 'Only upwards and downwards and leftwards and rightwards scrolling are supported for now'
+    if direction != 'up' && direction != 'down' && direction != 'left' && direction != 'right'
+      CXA.output_text 'Only upwards and downwards and leftwards and rightwards scrolling are supported now'
     end
-    if direction == :up
+    if direction == 'up'
       Appium::TouchAction.new(driver).swipe(start_x: (x), start_y: (y*0.5), end_x: x, end_y: y + (y*0.5),:touchCount => touch_count,:duration => duration).perform
-    elsif direction == :down
+    elsif direction == 'down'
       Appium::TouchAction.new(driver).swipe(start_x: (x), start_y: (y).to_int, end_x: (x), end_y: y * 0.5,:touchCount => touch_count,:duration => duration).perform
-    elsif direction == :left
+    elsif direction == 'left'
       Appium::TouchAction.new(driver).swipe(start_x: (x * 0.6), start_y: y, end_x: (x * 0.3), end_y: y,:touchCount => touch_count,:duration => duration).perform
-    else direction == :right
+    else direction == 'right'
     Appium::TouchAction.new(driver).swipe(start_x: (x * 0.3), start_y: y, end_x: (x * 0.6), end_y: y,:touchCount => touch_count,:duration => duration).perform
     end
   end
 
-  def swipe_element(locator, direction = :down, touch_count = 1, duration = 1000)
+  def swipe_element(locator, direction = 'down', touch_count = 1, duration = 1000)
     element = driver.find_element(locator.locator.first,locator.locator.last).rect
     start_x = element.x
     end_x = element.x + element.width
     start_y = element.y
     end_y = element.y + element.height
-    if direction == :up
+    if direction == 'up'
       Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.5, start_y: (start_y + (element.height * 0.2)), end_x: end_x * 0.5, end_y: (end_y - (element.height * 0.2)),:touchCount => touch_count,:duration => duration).perform
-    elsif direction == :down
+    elsif direction == 'down'
       Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.5, start_y: (end_y - (element.height * 0.2)), end_x: start_x * 0.5, end_y: (start_y + (element.height * 0.3)),:touchCount => touch_count,:duration => duration).perform
-    elsif direction == :left
+    elsif direction == 'left'
       Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.9, start_y: end_y - (element.height/2), end_x: start_x, end_y: end_y - (element.height/2),:touchCount => 2,:duration => 0).perform
-    else direction == :right
+    else direction == 'right'
       Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.1, start_y: end_y - (element.height/2), end_x: end_x * 0.9, end_y: end_y - (element.height/2),:touchCount => 2,:duration => 0).perform
     end
   end
 
-  def scroll_to_text(text_val, direction = :down, num_loop = 15)
+  def scroll_to_text(text_val, direction = 'down', num_loop = 15)
     driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
       begin
@@ -120,11 +120,11 @@ module ScreenObject
     end
   end
 
-  def scroll_find(locator, direction = :down, num_loop = 15)
+  def scroll_find(locator, direction = 'down', num_loop = 15)
     driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
       begin
-        if (driver.find_element(locator.locator.first,locator.locator.last).displayed?)
+        if driver.find_element(locator.locator.first,locator.locator.last).displayed?
           break
         end
       rescue
@@ -139,12 +139,12 @@ module ScreenObject
     driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
       begin
-        if (driver.find_element(locator.locator.first,locator.locator.last).displayed?)
+        if driver.find_element(locator.locator.first,locator.locator.last).displayed?
           driver.find_element(locator.locator.first,locator.locator.last).click
           break
         end
       rescue
-        scroll(:down)
+        scroll('down')
         false
       end
       raise("#{locator.locator} is not displayed") if i==num_loop
@@ -155,11 +155,11 @@ module ScreenObject
     driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
       begin
-        if (driver.find_element(locator.locator.first,locator.locator.last).displayed?)
+        if driver.find_element(locator.locator.first,locator.locator.last).displayed?
           break
         end
       rescue
-        scroll(:up)
+        scroll('up')
         false
       end
       raise("#{locator.locator} is not displayed") if i==num_loop
@@ -169,12 +169,12 @@ module ScreenObject
   def scroll_up_click(locator, num_loop = 15)
     for i in 0..num_loop
       begin
-        if (driver.find_element(locator.locator.first,locator.locator.last).displayed?)
+        if driver.find_element(locator.locator.first,locator.locator.last).displayed?
           driver.find_element(locator.locator.first,locator.locator.last).click
           break
         end
         rescue
-        scroll(:up)
+        scroll('up')
         false
       end
       raise("#{locator.locator} is not displayed") if i==num_loop
