@@ -86,12 +86,13 @@ module ScreenObject
     Appium::TouchAction.new(driver).swipe(start_x: (x * 0.3), start_y: y, end_x: (x * 0.6), end_y: y,:touchCount => touch_count,:duration => duration).perform
     end
   end
+
   def swipe_element(locator, direction = :down, touch_count = 1, duration = 1000)
     element = driver.find_element(locator.locator.first,locator.locator.last).rect
     start_x = element.x
     end_x = element.x + element.width
     start_y = element.y
-    end_y = element.y +  element.height
+    end_y = element.y + element.height
     if direction == :up
       Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.5, start_y: (start_y + (element.height * 0.2)), end_x: end_x * 0.5, end_y: (end_y - (element.height * 0.2)),:touchCount => touch_count,:duration => duration).perform
     elsif direction == :down
@@ -101,8 +102,8 @@ module ScreenObject
     else direction == :right
       Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.1, start_y: end_y - (element.height/2), end_x: end_x * 0.9, end_y: end_y - (element.height/2),:touchCount => 2,:duration => 0).perform
     end
-
   end
+
   def scroll_to_text(text_val, direction = :down, num_loop = 15)
     driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
@@ -111,7 +112,7 @@ module ScreenObject
           puts "found element #{text_val}"
           break
         end
-      rescue Selenium::WebDriver::Error::NoSuchElementError
+      rescue
         scroll(direction)
         false
       end
@@ -172,6 +173,7 @@ module ScreenObject
           driver.find_element(locator.locator.first,locator.locator.last).click
           break
         end
+        rescue
         scroll(:up)
         false
       end

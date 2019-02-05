@@ -32,7 +32,6 @@ module ScreenObject
           false
         end
       end
-
      end
   end
 end
