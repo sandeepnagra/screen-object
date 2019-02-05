@@ -165,7 +165,7 @@ module ScreenObject
         driver.manage.timeouts.implicit_wait = 1
         for i in 0..num_loop
           begin
-            if (element.displayed?)
+            if element.displayed?
               element.click
               puts "Clicked on element: #{name}"
               break
