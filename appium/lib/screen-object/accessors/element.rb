@@ -81,79 +81,89 @@ module ScreenObject
         end
       end
 
-      def scroll(direction = 'down', touch_count = 1, duration = 1000)
-        # driver.execute_script 'mobile: scrollTo',:element => element.ref
-        # driver.execute_script("mobile: scroll",:direction => direction.downcase, :element => element.ref)
+      def gesture(x1,y1,x2,y2,duration)
+        Appium::TouchAction.new($driver).swipe(start_x: x1, start_y: y1, end_x: x2, end_y: y2,duration: duration).perform
+      rescue
+        raise("Error during gesture")
+      end
+
+      def _scroll(direction = :down, duration = 1000)
         size = driver.window_size
         x = size.width/2
         y = size.height/2
-        if direction != 'up' && direction != 'down' && direction != 'left' && direction != 'right'
-          CXA.output_text 'Only upwards and downwards and leftwards and rightwards scrolling are supported for now'
+        case direction
+        when :up then loc = [x, y*0.5, x, (y + (y*0.5)),duration]
+        when :down then loc =[x, y, x, y * 0.5,duration]
+        when :left then loc = [x * 0.6, y, x * 0.3, y,duration]
+        when :right then loc =[x * 0.3, y, x * 0.6, y,duration]
+        else
+          raise('Only upwards and downwards scrolling are supported')
         end
-        if direction == 'up'
-          Appium::TouchAction.new(driver).swipe(start_x: (x), start_y: (y*0.5), end_x: x, end_y: y + (y*0.5),:touchCount => touch_count,:duration => duration).perform
-        elsif direction == 'down'
-          Appium::TouchAction.new(driver).swipe(start_x: (x), start_y: (y).to_int, end_x: (x), end_y: y * 0.5,:touchCount => touch_count,:duration => duration).perform
-        elsif direction == 'left'
-          Appium::TouchAction.new(driver).swipe(start_x: (x * 0.6), start_y: y, end_x: (x * 0.3), end_y: y,:touchCount => touch_count,:duration => duration).perform
-        else direction == 'right'
-        Appium::TouchAction.new(driver).swipe(start_x: (x * 0.3), start_y: y, end_x: (x * 0.6), end_y: y,:touchCount => touch_count,:duration => duration).perform
-        end
+        gesture(loc[0],loc[1],loc[2],loc[3],loc[4])
       end
 
-      def scroll_find(name, direction = 'down', num_loop = 15)
-        driver.manage.timeouts.implicit_wait = 1
-        for i in 0..num_loop
-          begin
-            if (element.displayed?)
-              puts "scroll #{direction} to #{name}"
-              break
-            end
-          rescue
-            scroll(direction)
-            raise("could not find element: #{name} on screen") if (i==num_loop)
-            false
-          end
-        end
+      def scroll_down
+        _scroll(:down)
       end
 
-      def scroll_element(name, direction = 'down')
-        # element = driver.find_element(locator[0],self.locator[1])
-        if element.displayed?
-          driver.manage.timeouts.implicit_wait = 1
-          touch_count = 1, duration = 1000
-          element_details = element.rect
-          start_x = element_details.x
-          end_x = element_details.x + element_details.width
-          start_y = element_details.y
-          end_y = element_details.y + element_details.height
-          if direction == "up"
-            Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.5, start_y: (start_y + (element_details.height * 0.2)), end_x: end_x * 0.5, end_y: (end_y - (element_details.height * 0.2)),:touchCount => touch_count,:duration => duration).perform
-          elsif direction == "down"
-            Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.5, start_y: (end_y - (element_details.height * 0.2)), end_x: start_x * 0.5, end_y: (start_y + (element_details.height * 0.3)),:touchCount => touch_count,:duration => duration).perform
-          elsif direction == "left"
-            Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.9, start_y: end_y - (element_details.height/2), end_x: start_x, end_y: end_y - (element_details.height/2),:touchCount => 2,:duration => 0).perform
-          else direction == "right"
-          Appium::TouchAction.new(driver).swipe(start_x: end_x * 0.1, start_y: end_y - (element_details.height/2), end_x: end_x * 0.9, end_y: end_y - (element_details.height/2),:touchCount => 2,:duration => 0).perform
-          end
-        end
-      rescue
-        raise("#{name} is not displayed") if i==num_loop
+      def scroll_up
+        _scroll(:up)
       end
 
-      def scroll_to_text(text, direction = 'down')
-        driver.manage.timeouts.implicit_wait = 1
+      def swipe_left
+        _scroll(:left)
+      end
+
+      def swipe_right
+        _scroll(:right)
+      end
+
+      def swipe_my_element(direction = :down, duration = 1000)
+        my_element = element.rect
+        start_x = my_element.x
+        end_x = my_element.x + my_element.width
+        start_y = my_element.y
+        end_y = my_element.y + my_element.height
+        height = my_element.height
+        case direction
+        when :up then  loc = [end_x * 0.5, (start_y + ( height * 0.2)), end_x * 0.5, (end_y - (height * 0.2)),duration]
+        when :down then  loc = [end_x * 0.5, (end_y - (height * 0.2)), start_x * 0.5, (start_y + (height * 0.3)), duration]
+        when :left then  loc = [end_x * 0.9,  end_y - (height/2), start_x, end_y - (height/2), duration]
+        when :right then  loc = [end_x * 0.1, end_y - (height/2), end_x * 0.9, end_y - (height/2), duration]
+        else
+          raise('Only upwards and downwards scrolling are supported')
+        end
+        gesture(loc[0],loc[1],loc[2],loc[3],loc[4])
+      end
+
+      def scroll_element_down
+        swipe_my_element(:down)
+      end
+
+      def scroll_element_up
+        swipe_my_element(:up)
+      end
+
+      def swipe_element_left
+        swipe_my_element(:left,2000)
+      end
+
+      def swipe_element_right
+        swipe_my_element(:right,2000)
+      end
+
+      def scroll_find(direction = :down, num_loop = 15)
+        driver.manage.timeouts.implicit_wait = 0
         for i in 0..num_loop
           begin
             if element.displayed?
-              puts "scroll #{direction} and found element: #{text}"
               break
             end
           rescue
-            scroll(direction)
+            _scroll(direction)
             false
           end
-          raise("#{text} is not displayed") if i==num_loop
+          raise("#{element.locator} is not displayed") if i==num_loop
         end
       end
 
@@ -161,21 +171,13 @@ module ScreenObject
         scroll_to_text(text)
       end
 
-      def scroll_for_element_click(name, direction, num_loop = 15)
-        driver.manage.timeouts.implicit_wait = 1
-        for i in 0..num_loop
-          begin
-            if element.displayed?
-              element.click
-              puts "Clicked on element: #{name}"
-              break
-            end
-          rescue
-            scroll(direction)
-            false
-          end
-          raise("#{name} is not displayed") if i==num_loop
-        end
+      def scroll_to_view(direction = :down)
+        scroll_find(direction)
+      end
+
+      def scroll_to_view_click(direction = :down)
+        scroll_find(direction)
+        element.click
       end
 
       def scroll_for_dynamic_element_click (expected_text,num_loop = 15)
@@ -186,29 +188,12 @@ module ScreenObject
             puts "Clicked on #{expected_text}"
             break
           else
-            scroll
+            _scroll
             element.click
           end
         end
       rescue
         raise("#{expected_text} is not displayed") if i==num_loop
-      end
-
-      def click_text(text, direction=:down)
-        driver.manage.timeouts.implicit_wait = 0
-        for i in 0..num_loop
-          begin
-            if driver.find("#{text}").display.nil?
-              driver.find("#{text}").click
-              puts "clicked on text:  #{text}"
-              break
-            end
-          rescue
-            scroll(direction)
-            false
-          end
-          raise("#{text} is not displayed") if i==num_loop
-        end
       end
 
       def click_dynamic_text(text)

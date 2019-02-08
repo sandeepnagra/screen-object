@@ -4,6 +4,6 @@ gem 'rake'
 gem 'require_all'
 gem 'rspec'
 gem 'cucumber'
-
+gem 'yard'
 
 gemspec

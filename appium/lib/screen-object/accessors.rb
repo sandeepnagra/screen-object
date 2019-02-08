@@ -303,12 +303,27 @@ module ScreenObject
       #   welcome_text # This will click on the Welcome text on the screen.
       # end
       define_method("#{name}_click") do
-        ScreenObject::AppElements::Text.new(locator).scroll_for_element_click
+        ScreenObject::AppElements::Text.new(locator).scroll_to_view_click
       end
 
-      define_method("scroll_click_#{name}") do |direction|
-        # direction = options[:direction] || 'down','up','left','right'
-        ScreenObject::AppElements::Text.new(locator).scroll_for_element_click("#{name}", direction)
+      define_method("scroll_up_click_#{name}") do
+        # direction = options[:direction] || 'up'
+        ScreenObject::AppElements::Text.new(locator).scroll_to_view_click(:up)
+      end
+
+      define_method("scroll_down_click_#{name}") do
+        # direction = options[:direction] || 'up'
+        ScreenObject::AppElements::Text.new(locator).scroll_to_view_click(:down)
+      end
+
+      define_method("scroll_down_to_#{name}") do
+        # direction = options[:direction] || 'down'
+        ScreenObject::AppElements::Text.new(locator).scroll_to_view(:down)
+      end
+
+      define_method("scroll_up_to_#{name}") do
+        # direction = options[:direction] || 'down'
+        ScreenObject::AppElements::Text.new(locator).scroll_to_view(:up)
       end
 
       # generates method for retrieving text of the object.
@@ -551,37 +566,42 @@ module ScreenObject
 
       define_method("click_on_#{name}") do
         # direction = options[:direction] || 'down'
-        ScreenObject::AppElements::Element.new(locator).scroll_for_element_click("#{name}",'down')
+        ScreenObject::AppElements::Element.new(locator).scroll_to_view_click
       end
 
-      define_method("scroll_to_#{name}") do |direction|
+      define_method("scroll_up_click_#{name}") do
+        # direction = options[:direction] || 'up'
+        ScreenObject::AppElements::Element.new(locator).scroll_to_view_click(:up)
+      end
+
+      define_method("scroll_down_to_#{name}") do
         # direction = options[:direction] || 'down'
-        ScreenObject::AppElements::Element.new(locator).scroll_find("#{name}", direction)
+        ScreenObject::AppElements::Element.new(locator).scroll_to_view(:down)
       end
 
-      define_method("scroll_click_#{name}") do |direction|
-        # direction = options[:direction] || 'down','up','left','right'
-        ScreenObject::AppElements::Element.new(locator).scroll_for_element_click("#{name}", direction)
+      define_method("scroll_up_to_#{name}") do
+        # direction = options[:direction] || 'up'
+        ScreenObject::AppElements::Element.new(locator).scroll_to_view(:up)
       end
 
       define_method("#{name}_scroll_down") do
         # direction = options[:direction] || 'down'
-        ScreenObject::AppElements::Element.new(locator).scroll_element("#{name}",'down')
+        ScreenObject::AppElements::Element.new(locator).scroll_element_down
       end
 
       define_method("#{name}_scroll_up") do
         # direction = options[:direction] || 'up'
-        ScreenObject::AppElements::Element.new(locator).scroll_element("#{name}",'up')
+        ScreenObject::AppElements::Element.new(locator).scroll_element_up
       end
 
-      define_method("#{name}_scroll_left") do
+      define_method("#{name}_swipe_left") do
         # direction = options[:direction] || 'left'
-        ScreenObject::AppElements::Element.new(locator).scroll_element("#{name}", 'left')
+        ScreenObject::AppElements::Element.new(locator).swipe_element_left
       end
 
-      define_method("#{name}_scroll_right") do
+      define_method("#{name}_swipe_right") do
         # direction = options[:direction] || 'right'
-        ScreenObject::AppElements::Element.new(locator).scroll_element("#{name}",'right')
+        ScreenObject::AppElements::Element.new(locator).swipe_element_right
       end
 
     end
