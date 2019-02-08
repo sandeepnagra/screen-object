@@ -138,6 +138,7 @@ module ScreenObject
 
   def scroll_to_click(locator, direction)
     scroll_find(locator, direction)
+    driver.find_element(locator.locator.first,locator.locator.last).click
   end
 
   def drag_and_drop_element(source_locator,source_locator_value,target_locator,target_locator_value)
