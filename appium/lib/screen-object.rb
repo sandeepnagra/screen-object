@@ -63,7 +63,7 @@ module ScreenObject
   end
 
   def enter
-    #pending implementation
+    driver.send_keys(:enter)
   end
 
   def gesture(x1,y1,x2,y2,duration)
@@ -121,7 +121,7 @@ module ScreenObject
     gesture(loc[0],loc[1],loc[2],loc[3],loc[4])
   end
   
-  def scroll_find(locator, direction = 'down', num_loop = 15)
+  def scroll_find(locator, direction = :down, num_loop = 15)
     driver.manage.timeouts.implicit_wait = 1
     for i in 0..num_loop
       begin

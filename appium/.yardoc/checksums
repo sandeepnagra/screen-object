@@ -1,0 +1,7 @@
+lib/screen-object.rb 7424a6d803052848869e4b3720be1e2f9bdeceee
+lib/screen-object/accessors.rb 6294f45a9dddac1628edc9d323d06efc83ba8c6b
+lib/screen-object/appium_server.rb 3aa6aae61a62fbb7bd141f41597207fdb2a04acc
+lib/screen-object/elements.rb 53c08f0ee9c317e3760d225e098cf0ed7b7c89d0
+lib/screen-object/load_appium.rb 18abbd8de7903d4e23480492d2257fa3dd810797
+lib/screen-object/screen_factory.rb d0820cc8969e6eb41164c7905cf03775a2811fe6
+lib/screen-object/version.rb 94f3172ec4fb3b6476df49df5adabc97d740371b

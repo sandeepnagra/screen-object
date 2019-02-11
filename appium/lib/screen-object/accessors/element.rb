@@ -68,8 +68,8 @@ module ScreenObject
         concat_attribute=[]
         element_attributes.each{|i| concat_attribute << %Q(contains(@#{i}, '#{text}'))}
         puts  "//#{locator[0]}[#{concat_attribute.join(' or ')}]"
-        locator1="xpath~//#{locator[0]}[#{concat_attribute.join(' or ')}]"
-        @locator=locator1.split("~")
+        locator1="xpath://#{locator[0]}[#{concat_attribute.join(' or ')}]"
+        @locator=locator1.split(":")
         element
       end
 
