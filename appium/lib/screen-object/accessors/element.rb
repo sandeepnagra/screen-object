@@ -81,41 +81,41 @@ module ScreenObject
         end
       end
 
-      def gesture(x1,y1,x2,y2,duration)
-        Appium::TouchAction.new($driver).swipe(start_x: x1, start_y: y1, end_x: x2, end_y: y2,duration: duration).perform
-      rescue
-        raise("Error during gesture")
+      def gesture(args)
+        Appium::TouchAction.new($driver).swipe(start_x: args[0], start_y: args[1], end_x: args[2], end_y: args[3], duration: args[4]).perform
+      rescue RuntimeError =>e
+        raise("Error during gesture in element.rb\n Error Details: #{e}")
       end
 
-      def _scroll(direction = :down, duration = 1000)
+      def scroll(direction = :down, duration = 1000)
         size = driver.window_size
         x = size.width/2
         y = size.height/2
-        case direction
-        when :up then loc = [x, y*0.5, x, (y + (y*0.5)),duration]
-        when :down then loc =[x, y, x, y * 0.5,duration]
-        when :left then loc = [x * 0.6, y, x * 0.3, y,duration]
-        when :right then loc =[x * 0.3, y, x * 0.6, y,duration]
-        else
-          raise('Only upwards and downwards scrolling are supported')
-        end
-        gesture(loc[0],loc[1],loc[2],loc[3],loc[4])
+        loc = (case direction
+            when :up then    [x, y*0.5, x, (y + (y*0.5)),duration]
+            when :down then  [x, y, x, y * 0.5,duration]
+            when :left then  [x * 0.6, y, x * 0.3, y,duration]
+            when :right then [x * 0.3, y, x * 0.6, y,duration]
+            else
+              raise('Only upwards and downwards scrolling are supported')
+            end)
+         gesture(loc)
       end
 
       def scroll_down
-        _scroll(:down)
+        scroll(:down)
       end
 
       def scroll_up
-        _scroll(:up)
+        scroll(:up)
       end
 
       def swipe_left
-        _scroll(:left)
+        scroll(:left)
       end
 
       def swipe_right
-        _scroll(:right)
+        scroll(:right)
       end
 
       def swipe_my_element(direction = :down, duration = 1000)
@@ -125,15 +125,15 @@ module ScreenObject
         start_y = my_element.y
         end_y = my_element.y + my_element.height
         height = my_element.height
-        case direction
-        when :up then  loc = [end_x * 0.5, (start_y + ( height * 0.2)), end_x * 0.5, (end_y - (height * 0.2)),duration]
-        when :down then  loc = [end_x * 0.5, (end_y - (height * 0.2)), start_x * 0.5, (start_y + (height * 0.3)), duration]
-        when :left then  loc = [end_x * 0.9,  end_y - (height/2), start_x, end_y - (height/2), duration]
-        when :right then  loc = [end_x * 0.1, end_y - (height/2), end_x * 0.9, end_y - (height/2), duration]
-        else
-          raise('Only upwards and downwards scrolling are supported')
-        end
-        gesture(loc[0],loc[1],loc[2],loc[3],loc[4])
+        loc = case direction
+              when :up then    [end_x * 0.5, (start_y + ( height * 0.2)), end_x * 0.5, (end_y - (height * 0.2)),duration]
+              when :down then  [end_x * 0.5, (end_y - (height * 0.2)), start_x * 0.5, (start_y + (height * 0.3)), duration]
+              when :left then  [end_x * 0.9,  end_y - (height/2), start_x, end_y - (height/2), duration]
+              when :right then [end_x * 0.1, end_y - (height/2), end_x * 0.9, end_y - (height/2), duration]
+              else
+                raise('Only upwards and downwards scrolling are supported')
+              end
+        gesture(loc)
       end
 
       def scroll_element_down
@@ -160,7 +160,7 @@ module ScreenObject
               break
             end
           rescue
-            _scroll(direction)
+            scroll(direction)
             false
           end
           raise("#{element.locator} is not displayed") if i==num_loop
@@ -188,7 +188,7 @@ module ScreenObject
             puts "Clicked on #{expected_text}"
             break
           else
-            _scroll
+            scroll
             element.click
           end
         end
@@ -222,7 +222,6 @@ module ScreenObject
           element.click
         end
       end
-
     end
   end
 end
