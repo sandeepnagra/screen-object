@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require_relative '../spec_helper'
 require 'screen-object/appium_server'
 
 describe ScreenObject::AppiumServer do
-
-
   let(:the_server) { ScreenObject::AppiumServer.new }
 
   context 'when appium server is started' do

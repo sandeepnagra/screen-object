@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require_relative '../spec_helper'
 require 'screen-object/appium_server'
 
 describe ScreenObject::AppiumServer do
-
   attr_reader :the_server
 
   before(:each) do
@@ -18,9 +19,8 @@ describe ScreenObject::AppiumServer do
   def expected_build_params(*params)
     expect(ChildProcess).to receive(:build).with(*params).and_return(@process)
   end
-  
 
-  context "when starting the appium server" do
+  context 'when starting the appium server' do
     it 'should start the appium process with no parameters' do
       expected_build_params('appium')
       the_server.start
@@ -38,7 +38,7 @@ describe ScreenObject::AppiumServer do
 
     it 'should accept symbol as key for the parameter' do
       expected_build_params('appium', '--foo', 'bar')
-      the_server(:foo => 'bar').start
+      the_server(foo: 'bar').start
     end
 
     it 'should start the server process' do
@@ -48,12 +48,11 @@ describe ScreenObject::AppiumServer do
     end
   end
 
-  context "When stopping the appium server" do
+  context 'When stopping the appium server' do
     it 'should stop the appium process' do
       the_server.start
       expect(@process).to receive(:stop)
       the_server.stop
     end
   end
-
 end

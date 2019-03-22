@@ -1,21 +1,20 @@
-=begin
-***********************************************************************************************************
-SPDX-Copyright: Copyright (c) Capital One Services, LLC
-SPDX-License-Identifier: Apache-2.0
-Copyright 2016 Capital One Services, LLC
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and limitations under the License. 
-***********************************************************************************************************
-=end
+# frozen_string_literal: true
+
+# ***********************************************************************************************************
+# SPDX-Copyright: Copyright (c) Capital One Services, LLC
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2016 Capital One Services, LLC
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#     http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+# ***********************************************************************************************************
 
 module ScreenObject
-
   # contains  module level methods that are added into your screen objects.
   # when you include the ScreenObject module.  These methods will be generated as services for screens.
 
@@ -23,10 +22,8 @@ module ScreenObject
   # include require 'screen-object' into environment file. doing this , it will load screen object methods for usage..
 
   module Accessors
-
     # Button class generates all the methods related to different operations that can be performed on the button.
     def button(name, locator)
-
       # generates method for clicking button.
       # this method will not return any value.
       # @example click on 'Submit' button.
@@ -85,7 +82,7 @@ module ScreenObject
       # end
       define_method("scroll_click_#{name}") do |direction|
         # direction = options[:direction] || 'down'
-        ScreenObject::AppElements::Button.new(locator).scroll_for_element_click("#{name}", direction)
+        ScreenObject::AppElements::Button.new(locator).scroll_for_element_click(name.to_s, direction)
       end
 
       # generates method for scrolling on iOS application screen and click on button. This method should be used when button text is dynamic..
@@ -203,11 +200,14 @@ module ScreenObject
       define_method("#{name}_element") do
         ScreenObject::AppElements::Button.new(locator)
       end
-    end   # end of button class.
+
+      define_method("#{name}_rect") do
+        ScreenObject::AppElements::Button.new(locator).rect
+      end
+    end # end of button class.
 
     # Checkbox class generates all the methods related to different operations that can be performed on the check box on the screen.
     def checkbox(name, locator)
-
       # generates method for checking the checkbox object.
       # this will not return any value
       # @example check if 'remember me' checkbox is not checked.
@@ -263,14 +263,12 @@ module ScreenObject
       #                  like: .click, .value, .element etc. which are needed in certain cases
       # end
       define_method("#{name}_element") do
-        ScreenObject::AppElements::CheckBox.new(locator)
+        ScreenObject::AppElements::CheckBox.new(locator).element
       end
     end
 
-
     # Text class generates all the methods related to different operations that can be performed on the text object on the screen.
-    def text(name,locator)
-
+    def text(name, locator)
       # generates method for clicking button.
       # this method will not return any value.
       # @example click on 'Submit' button.
@@ -279,7 +277,7 @@ module ScreenObject
       #  login_button # This will click on the button.
       # end
       define_method(name) do
-        ScreenObject::AppElements::Text.new(locator).tap
+        ScreenObject::AppElements::Text.new(locator).text
       end
 
       # generates method for checking if text exists on the screen.
@@ -357,6 +355,13 @@ module ScreenObject
         ScreenObject::AppElements::Text.new(locator).dynamic_text_exists?(text)
       end
 
+      define_method("#{name}_has_text?") do |text|
+        ScreenObject::AppElements::Text.new(locator).has_text?(text)
+      end
+
+      define_method("#{name}_with_text") do |text|
+        ScreenObject::AppElements::Text.new(locator).with_text(text)
+      end
       # generates method for retrieving text of the value attribute of the object.
       # this will return text of value attribute of the object.
       # @example retrieve text of the 'Welcome' text.
@@ -406,12 +411,10 @@ module ScreenObject
         # direction = options[:direction] || 'down'
         ScreenObject::AppElements::Text.new(locator).scroll_to_exact_text(text)
       end
-
     end
 
     # text_field class generates all the methods related to different operations that can be performed on the text_field object on the screen.
-    def text_field(name,locator)
-
+    def text_field(name, locator)
       # generates method for setting text into text field.
       # There is no return value for this method.
       # @example setting username field.
@@ -420,7 +423,7 @@ module ScreenObject
       #   self.username=username   # This method will enter text into username text field.
       # end
       define_method("#{name}=") do |text|
-        ScreenObject::AppElements::TextField.new(locator).text=(text)
+        ScreenObject::AppElements::TextField.new(locator).text = text
       end
 
       # generates method for comparing expected and actual text.
@@ -431,7 +434,7 @@ module ScreenObject
       # def get_welcome_text
       #   username_text # This will return text containing in text field attribute.
       # end
-      define_method("#{name}") do
+      define_method("#{name}_text") do
         ScreenObject::AppElements::TextField.new(locator).text
       end
 
@@ -499,10 +502,8 @@ module ScreenObject
       end
     end
 
-
     # Image class generates all the methods related to different operations that can be performed on the image object on the screen.
-    def image(name,locator)
-
+    def image(name, locator)
       # generates method for checking the existence of the image.
       # this will return true or false based on if image is available or not
       # @example check if 'logo' image is displayed on the page
@@ -515,7 +516,7 @@ module ScreenObject
         ScreenObject::AppElements::Image.new(locator).exists?
       end
 
-      #generates method for clicking image
+      # generates method for clicking image
       # this will not return any value.
       # @example clicking on logo image.
       # text(:logo,"xpath~//UITextField")
@@ -523,7 +524,7 @@ module ScreenObject
       # def click_logo
       #  logo # This will click on the logo text on the screen.
       # end
-      define_method("#{name}") do
+      define_method(name.to_s) do
         ScreenObject::AppElements::Image.new(locator).click
       end
 
@@ -539,13 +540,13 @@ module ScreenObject
       #                  like: .click, .value, .element etc. which are needed in certain cases
       # end
       define_method("#{name}_element") do
-        ScreenObject::AppElements::Image.new(locator)
+        ScreenObject::AppElements::Image.new(locator).element
       end
     end
 
     # table class generates all the methods related to different operations that can be performed on the table object on the screen.
     def table(name, locator)
-      #generates method for counting total no of cells in table
+      # generates method for counting total no of cells in table
       define_method("#{name}_cell_count") do
         ScreenObject::AppElements::Table.new(locator).cell_count
       end
@@ -562,15 +563,19 @@ module ScreenObject
       #                  like: .click, .value, .element etc. which are needed in certain cases
       # end
       define_method("#{name}_element") do
-        ScreenObject::AppElements::Table.new(locator)
+        ScreenObject::AppElements::Table.new(locator).element
       end
     end
 
     # elements class generates all the methods related to general elements operation
     def element(name, locator)
-      #generates method for elements object
-      define_method("#{name}") do
+      # generates method for elements object
+      define_method(name.to_s) do
         ScreenObject::AppElements::Element.new(locator)
+      end
+
+      define_method("#{name}_element") do
+        ScreenObject::AppElements::Element.new(locator).element
       end
 
       define_method("#{name}_elements") do
@@ -632,7 +637,7 @@ module ScreenObject
       # This can be used for both IOS and Android platform.
       # Scroll to the element left and right
       # this method will not return any value.
-      #element(:change_box, id: 'horizontal_scroll_view')
+      # element(:change_box, id: 'horizontal_scroll_view')
       # change_box_swipe_left
       define_method("#{name}_swipe_left") do
         # direction = options[:direction] || 'left'
@@ -642,14 +647,12 @@ module ScreenObject
       # This can be used for both IOS and Android platform.
       # Scroll to the element left and right
       # this method will not return any value.
-      #element(:change_box, id: 'horizontal_scroll_view')
+      # element(:change_box, id: 'horizontal_scroll_view')
       # change_box_swipe_right
       define_method("#{name}_swipe_right") do
         # direction = options[:direction] || 'right'
         ScreenObject::AppElements::Element.new(locator).swipe_element_right
       end
-
     end
-
   end # end of Accessors module
 end # end of screen object module

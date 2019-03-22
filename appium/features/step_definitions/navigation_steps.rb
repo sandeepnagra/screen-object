@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 When(/^I navigate to the buttons screen$/) do
   navigate_to(ButtonsScreen)
 end

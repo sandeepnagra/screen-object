@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 class Screen
   include ScreenObject
 
-  #ios
-  button(:ui_catalog, "name~UICatalog")
-  button(:no_button, "name~nobutton")
+  # ios
+  button(:ui_catalog, 'name~UICatalog')
+  button(:no_button, 'name~nobutton')
   text(:ui_catalog_text, "xpath~//UIAStaticText[@name='UICatalog']")
-  text_field(:username, "xpath~//UIAApplication[1]/UIAWindow[1]/UIAScrollView[1]/UIATextField[1]")
-  text_field(:no_textfield, "name~notextfield")
-  checkbox(:remember, "id~c/rememberMe")
+  text_field(:username, 'xpath~//UIAApplication[1]/UIAWindow[1]/UIAScrollView[1]/UIATextField[1]')
+  text_field(:no_textfield, 'name~notextfield')
+  checkbox(:remember, 'id~c/rememberMe')
   table(:table_view, 'xpath~UIAApplication[1]/UIAWindow[2]/UIATableView[1]')
 
   # Button methods
@@ -32,7 +34,6 @@ class Screen
     ui_catalog?
   end
 
-
   def no_button_exists?
     no_button?
   end
@@ -42,7 +43,7 @@ class Screen
   end
 
   def enter_username(atext)
-    self.username=atext
+    self.username = atext
   end
 
   def get_username

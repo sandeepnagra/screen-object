@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'page_navigation'
 
 module ScreenObject
-
   #
   # Module to facilitate to creating of screen objects in step definitions.  You
   # can make the methods below available to all of your step definitions by adding
@@ -35,9 +36,8 @@ module ScreenObject
 
     def on(screen_class, &blk)
       @current_screen = screen_class.new
-      blk.call @current_screen if blk
+      yield @current_screen if blk
       @current_screen
     end
-
   end
 end

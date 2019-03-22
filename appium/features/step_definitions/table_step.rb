@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 When(/^I verify the count of table cells I should get an integer$/) do
   on(Screen).click_ui_catalog
