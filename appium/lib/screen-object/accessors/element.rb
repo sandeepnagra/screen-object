@@ -240,7 +240,6 @@ module ScreenObject
 
       def with_text(text)
         items = elements
-        text_value = ''
         items.each do |item|
           text_value = item.attribute('text').strip
           return item if text_value.casecmp?(text.strip.to_s)
