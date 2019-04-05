@@ -51,7 +51,7 @@ module ScreenObject
   def wait_until(timeout = 5, message = nil, &block)
     wait = Selenium::WebDriver::Wait.new(timeout: timeout, message: message)
     wait.until &block
-    sleep 0.5
+    sleep 0.2
   end
 
   def wait_step(timeout = 5, message = nil, &block)

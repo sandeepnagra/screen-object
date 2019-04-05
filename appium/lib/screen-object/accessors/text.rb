@@ -45,12 +45,11 @@ module ScreenObject
           text_value = if driver.device_is_android?
                          item.text.strip
                        else
-                         item.text.strip
+                         item.value.strip
                        end
           return true if text_value.casecmp?(text.strip.to_s)
         end
-        msg = "Expected Text: #{text}  \nFound Text: #{text_value}"
-        raise(msg)
+        false
       end
 
       def with_text(text)
