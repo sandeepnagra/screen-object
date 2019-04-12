@@ -128,39 +128,29 @@ module ScreenObject
     end
   end
 
-  def scroll_find(locator, direction = :down, num_loop = 15)
+  def scroll_find(locator={}, click_on = false, direction = :down, num_loop = 15)
     driver.manage.timeouts.implicit_wait = 1
     (0..num_loop).each do |i|
-      begin
-        if locator.is_a? String
-          if $driver.find(locator.to_s).displayed?
-            return driver.find(locator.to_s)
-          else
-            scroll_down
+        if locator[:text]
+          if driver.find(locator[:text].to_s).displayed?
+            return driver.find(locator[:text].to_s)
           end
-        end
-        if locator[:xpath]
-          if $driver.xpath((locator[:xpath]).to_s).displayed?
-            break
-          else
-            scroll(direction)
+        elsif locator[:xpath]
+          if driver.xpath((locator[:xpath]).to_s).displayed?
+            if click_on
+              driver.xpath((locator[:xpath]).to_s).click
+              break
+            else
+              return driver.xpath((locator[:xpath]).to_s)
+            end
           end
-         end
-        if $driver.find_element(":#{locator.locator[0]}", locator.locator[1]).displayed?
-          break
+        else locator.is_a? ScreenObject::AppElements::Element
+          return if driver.find_element(":#{locator.locator[0]}", locator.locator[1]).displayed?
         end
-      rescue StandardError
-        scroll_down
-        # scroll(direction)
-        false
-      end
-      raise("#{locator} is not displayed") if i == num_loop
+        raise("#{locator} could not find element") if i == num_loop
+        rescue StandardError
+          scroll(direction)
     end
-  end
-
-  def scroll_to_click(locator, direction)
-    scroll_find(locator, direction)
-    driver.find_element(locator.locator.first, locator.locator.last).click
   end
 
   def drag_and_drop_element(source_locator, source_locator_value, target_locator, target_locator_value)
