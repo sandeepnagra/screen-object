@@ -542,6 +542,16 @@ module ScreenObject
       define_method("#{name}_element") do
         ScreenObject::AppElements::Image.new(locator).element
       end
+
+      define_method("scroll_down_to_#{name}") do
+        # direction = options[:direction] || 'down'
+        ScreenObject::AppElements::Image.new(locator).scroll_to_view(:down)
+      end
+
+      define_method("scroll_up_to_#{name}") do
+        # direction = options[:direction] || 'down'
+        ScreenObject::AppElements::Image.new(locator).scroll_to_view(:up)
+      end
     end
 
     # table class generates all the methods related to different operations that can be performed on the table object on the screen.
