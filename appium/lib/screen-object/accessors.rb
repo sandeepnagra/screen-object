@@ -263,7 +263,7 @@ module ScreenObject
       #                  like: .click, .value, .element etc. which are needed in certain cases
       # end
       define_method("#{name}_element") do
-        ScreenObject::AppElements::CheckBox.new(locator).element
+        ScreenObject::AppElements::CheckBox.new(locator)
       end
     end
 
