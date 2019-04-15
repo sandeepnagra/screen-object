@@ -49,9 +49,10 @@ module ScreenObject
   end
 
   def wait_until(timeout = 5, message = nil, &block)
+    driver.no_wait
     wait = Selenium::WebDriver::Wait.new(timeout: timeout, message: message)
     wait.until &block
-    sleep 0.2
+    driver.set_wait
   end
 
   def wait_step(timeout = 5, message = nil, &block)
@@ -81,7 +82,7 @@ module ScreenObject
           when :left then  [x * 0.6, y, x * 0.3, y, duration]
           when :right then [x * 0.3, y, x * 0.6, y, duration]
           else
-            raise('Only upwards and downwards scrolling are supported')
+            raise('Only upwards, downwards, leftwards and rightwards scrolling are supported')
           end
     gesture(loc)
   end
@@ -115,7 +116,7 @@ module ScreenObject
           when :left then  [end_x * 0.9,  end_y - (height / 2), start_x, end_y - (height / 2), duration]
           when :right then [end_x * 0.1, end_y - (height / 2), end_x * 0.9, end_y - (height / 2), duration]
           else
-            raise('Only upwards and downwards scrolling are supported')
+            raise('Only upwards, downwards, leftwards and rightwards scrolling are supported')
           end
     gesture(loc)
   end
@@ -149,7 +150,6 @@ module ScreenObject
   end
 
   def _scroll_to(locator={}, direction = :down)
-    driver.manage.timeouts.implicit_wait = 1
     if locator[:text]
       driver.find(locator[:text].to_s)
     elsif locator[:xpath]

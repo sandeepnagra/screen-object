@@ -21,7 +21,6 @@ module ScreenObject
 
       def initialize(locator)
         if locator.is_a?(String)
-          # warn "#{DateTime.now.strftime("%F %T")} WARN ScreenObject Element [DEPRECATION] Passing the locator as a single string with locator type and value sepaarted by ~ is deprecated and will no longer work in version 2.0.0. Use a hash instead (ex: button(:login, id: 'button_id') lib/screen-object/accessors/element.rb:#{__LINE__}"
           @locator = locator.split(':')
         elsif locator.is_a?(Hash)
           @locator = locator.first
@@ -66,14 +65,14 @@ module ScreenObject
 
       def rect
         my_element = element.rect
-        opt = {}
-        opt[:start_x] = my_element.x
-        opt[:end_x] = my_element.x + my_element.width
-        opt[:start_y] = my_element.y
-        opt[:end_y] = my_element.y + my_element.height
-        opt[:height] = my_element.height
-        opt[:width] = my_element.width
-        opt
+        {
+            start_x: my_element.x,
+            end_x: my_element.x + my_element.width,
+            start_y: my_element.y,
+            end_y: my_element.y + my_element.height,
+            height: my_element.height,
+            width: my_element.width
+        }
       rescue RuntimeError => err
         raise("Error Details: #{err}")
       end
@@ -109,7 +108,7 @@ module ScreenObject
                when :left then  [x * 0.6, y, x * 0.3, y, duration]
                when :right then [x * 0.3, y, x * 0.6, y, duration]
                else
-                 raise('Only upwards and downwards scrolling are supported')
+                 raise('Only upwards, downwards, leftwards and rightwards scrolling are supported')
                end)
         gesture(loc)
       end
@@ -171,7 +170,6 @@ module ScreenObject
             break if element.displayed?
           rescue StandardError
             scroll direction.to_sym
-            puts 'scroling'
             false
           end
           raise("#{element.locator} is not displayed") if i == num_loop
