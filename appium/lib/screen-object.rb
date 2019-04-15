@@ -163,7 +163,7 @@ module ScreenObject
   # @param direction [symbol] The direction to search for an string
   # @param tries     [Integer] The amount of times we want to scroll to find the element
   # @return          [Boolean]
-  #
+
 
   def scroll_to_text(text, direction = :down, timeout = 30)
       wait_until(timeout,'Unable to find element',&->{text_visible?(text, direction)})
@@ -188,7 +188,6 @@ module ScreenObject
   end
 
   def element_visible?(element, direction = :down)
-    driver.no_wait
     driver.find_element("#{element.locator[0]}", "#{element.locator[1]}").displayed?
   rescue Selenium::WebDriver::Error::NoSuchElementError
       scroll(direction)
