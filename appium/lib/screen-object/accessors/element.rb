@@ -236,15 +236,6 @@ module ScreenObject
         end
       end
 
-      def with_text(text)
-        items = elements
-        items.each do |item|
-          text_value = item.attribute('text').strip
-          return item if text_value.casecmp?(text.strip.to_s)
-        end
-        msg = "Unable to find element with text: #{text}"
-        raise(msg)
-      end
     end
   end
 end
