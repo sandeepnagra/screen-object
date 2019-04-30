@@ -77,12 +77,12 @@ module ScreenObject
     x = size.width / 2
     y = size.height / 2
     loc = case direction
-          when :up then    [x, y * 0.5, x, (y + (y * 0.5)), duration]
+          when :up then    [x, y * 0.5, x, (y + (y * 0.3)), duration]
           when :down then  [x, y, x, y * 0.5, duration]
           when :left then  [x * 0.6, y, x * 0.3, y, duration]
           when :right then [x * 0.3, y, x * 0.6, y, duration]
           else
-            raise('Only upwards, downwards, leftwards and rightwards scrolling are supported')
+            raise('Only up, down, left and right scrolling is supported')
           end
     gesture(loc)
   end
@@ -116,32 +116,68 @@ module ScreenObject
           when :left then  [end_x * 0.9,  end_y - (height / 2), start_x, end_y - (height / 2), duration]
           when :right then [end_x * 0.1, end_y - (height / 2), end_x * 0.9, end_y - (height / 2), duration]
           else
-            raise('Only upwards, downwards, leftwards and rightwards scrolling are supported')
+            raise('Only up, down, left and right scrolling is supported')
           end
     gesture(loc)
   end
 
-  def scroll_down_to_text(text, direction = 'down')
-    if driver.device_is_ios?
-      driver.scroll(direction: direction.to_s, name: text.to_s)
-    else
-      scroll_find(text:text.to_s)
-    end
+  # Scroll Down in a direction until a string that matches is found,
+  #
+  # @param text      [String] The text you are looking for on the screen
+  def scroll_down_to_text(text)
+    scroll_text_to_view(text)
   end
 
-  def scroll_find_element(locator, direction = :down, timeout = 40)
-    wait_until(timeout,'Unable to find element',&->{scroll_to_element(locator, direction)})
-    driver.find_element(":#{locator.locator[0]}", locator.locator[1])
+  # Scroll Up in a direction until a string that matches is found,
+  #
+  # @param text      [String] The text you are looking for on the screen
+  def scroll_up_to_text(text)
+    scroll_text_to_view(text, :up)
   end
 
-  def scroll_find_text(text, direction = :down, timeout = 40)
-    wait_until(timeout,'Unable to find element',&->{scroll_to_text(text, direction)})
-    driver.find(text)
+  # Scrolls in a direction until a string that matches is found,
+  #
+  # @param text      [String] The text you are looking for on the screen
+  # @param direction [symbol] The direction to search for an string
+  # @param timeout   [Integer] The amount of times in seconds we want to scroll to find the element
+  # @return          [Boolean]
+  def scroll_text_to_view(text, direction = :down, timeout = 40)
+    wait_until(timeout,'Unable to find element',&->{text_visible?(text, direction)})
+    scroll(direction)
   end
 
-  def scroll_click(locator={}, direction = :down, timeout = 30)
-    wait_until(timeout,'Unable to find element',&->{_scroll_to(locator, direction)})
-    driver.find_element(":#{locator.locator[0]}", locator.locator[1]).click
+  # Scrolls in a direction if a text that matches is not found. return false,  otherwise return true
+  #
+  # @param text   [String] The text you are looking for on the screen
+  # @param direction [symbol] The direction to search for an string
+  # @return          [Boolean]
+  def text_visible?(text, direction)
+    driver.find(text).displayed?
+  rescue Selenium::WebDriver::Error::NoSuchElementError
+    scroll(direction)
+    false
+  end
+
+  # Scrolls in a direction if an element that matches is not found. return false,  otherwise return true
+  #
+  # @param element   [Element] The text you are looking for on the screen
+  # @param direction [symbol] The direction to search for an string
+  # @return          [Boolean]
+  def element_visible?(element, direction = :down)
+    driver.find_element("#{element.locator[0]}", "#{element.locator[1]}").displayed?
+  rescue Selenium::WebDriver::Error::NoSuchElementError
+    scroll(direction)
+    false
+  end
+
+  # Scrolls in a direction until an element that matches is found,  or return false
+  #
+  # @param element   [Element] The text you are looking for on the screen
+  # @param direction [symbol] The direction to search for an string
+  # @return          [Boolean]
+  #example: wait_until(timeout,'Unable to find element',&->{element_visible?(element, direction)})
+  def scroll_element_to_view(element, direction, time_out)
+    wait_until(time_out,'Unable to find element',&->{element_visible?(element, direction)})
   end
 
   def drag_and_drop_element(source_locator, source_locator_value, target_locator, target_locator_value)
@@ -157,40 +193,4 @@ module ScreenObject
     false
   end
 
-  # Scrolls in a direction until a string that matches is found,
-  #
-  # @param text      [String] The text you are looking for on the screen
-  # @param direction [symbol] The direction to search for an string
-  # @param tries     [Integer] The amount of times we want to scroll to find the element
-  # @return          [Boolean]
-
-
-  def scroll_to_text(text, direction = :down, timeout = 30)
-    wait_until(timeout,'Unable to find element',&->{text_visible?(text, direction)})
-  end
-
-  def text_visible?(text, direction = :down)
-    driver.find(text).displayed?
-  rescue Selenium::WebDriver::Error::NoSuchElementError
-    scroll(direction)
-    false
-  end
-
-  # Scrolls in a direction until an element that matches is found,  or return false
-  #
-  # @param element   [Element] The text you are looking for on the screen
-  # @param direction [symbol] The direction to search for an string
-  # @param tries     [Integer] The amount of times we want to scroll to find the element
-  # @return          [Boolean]
-
-  def scroll_to_element(element, direction = :down, timeout = 30)
-    wait_until(timeout,'Unable to find element',&->{element_visible?(element, direction)})
-  end
-
-  def element_visible?(element, direction = :down)
-    driver.find_element("#{element.locator[0]}", "#{element.locator[1]}").displayed?
-  rescue Selenium::WebDriver::Error::NoSuchElementError
-    scroll(direction)
-    false
-  end
 end
