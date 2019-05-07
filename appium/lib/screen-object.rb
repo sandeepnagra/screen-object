@@ -188,7 +188,7 @@ module ScreenObject
 
   def keyboard_hide
     begin
-      driver.hide_keyboard
+      driver.hide_keyboard if driver.is_keyboard_shown
     rescue
       false
     end
