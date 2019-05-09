@@ -108,16 +108,13 @@ module ScreenObject
         if exists?
           driver.set_wait(default_wait)
           scroll(direction)
-          sleep 1
           true
         else
           scroll(direction)
-          sleep 1
           false
         end
       rescue
        scroll(direction)
-       sleep 1
        false
       end
 
@@ -157,6 +154,7 @@ module ScreenObject
                 raise('Only upwards and downwards scrolling are supported')
               end
         gesture(loc)
+        sleep 0.5
       end
 
       def scroll_element_down
