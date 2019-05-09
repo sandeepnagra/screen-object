@@ -146,13 +146,16 @@ module ScreenObject
   def text_visible?(text, direction)
     if driver.find(text).displayed?
       scroll(direction)
+      sleep 1
       true
     else
       scroll(direction)
+      sleep 1
       false
     end
   rescue Selenium::WebDriver::Error::NoSuchElementError
     scroll(direction)
+    sleep 1
     false
   end
 

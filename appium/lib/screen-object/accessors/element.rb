@@ -108,13 +108,16 @@ module ScreenObject
         if exists?
           driver.set_wait(default_wait)
           scroll(direction)
+          sleep 1
           true
         else
           scroll(direction)
+          sleep 1
           false
         end
       rescue
        scroll(direction)
+       sleep 1
        false
       end
 
