@@ -154,7 +154,6 @@ module ScreenObject
                 raise('Only upwards and downwards scrolling are supported')
               end
         gesture(loc)
-        sleep 0.5
       end
 
       def scroll_element_down
