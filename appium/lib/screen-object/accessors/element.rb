@@ -13,12 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License. 
 ***********************************************************************************************************
 =end
-
+require_relative '../../../../appium/lib/screen-object'
 module ScreenObject
   module AppElements
-
     class Element
-
+      include ScreenObject
       attr_reader :locator
 
       def initialize(locator)
@@ -108,29 +107,29 @@ module ScreenObject
         driver.no_wait
         if exists?
           driver.set_wait(default_wait)
-          ScreenObject::Accessors.scroll(direction)
+          scroll(direction)
           true
         else
-          ScreenObject::Accessors.scroll(direction)
+          scroll(direction)
           false
         end
       rescue
-        ScreenObject::Accessors.scroll(direction)
-        false
+       scroll(direction)
+       false
       end
 
       # method for scrolling until element is visible.
       # this will NOT return any value.
       # @param [direction] 'Down', 'up'
       def scroll_element_to_view(direction = :down, time_out = 30)
-        ScreenObject::Accessors.wait_until(time_out,'Unable to find element',&->{element_visible?(direction)})
+        wait_until(time_out,'Unable to find element',&->{element_visible?(direction)})
       end
 
       # method for scrolling until element is visible and click.
       # this will NOT return any value.
       # @param [direction] 'Down', 'up'
       def scroll_element_to_view_click(direction= :down, time_out = 40)
-        ScreenObject::Accessors.wait_until(time_out,'Unable to find element',&->{element_visible?(direction)})
+        wait_until(time_out,'Unable to find element',&->{element_visible?(direction)})
         click
       end
 
@@ -154,7 +153,7 @@ module ScreenObject
               else
                 raise('Only upwards and downwards scrolling are supported')
               end
-        ScreenObject::Accessors.gesture(loc)
+        gesture(loc)
       end
 
       def scroll_element_down
@@ -177,7 +176,7 @@ module ScreenObject
         if dynamic_xpath(expected_text).displayed?
           click
         else
-          ScreenObject::Accessors.scroll
+          scroll
           click
         end
       end
