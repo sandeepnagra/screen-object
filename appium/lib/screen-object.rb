@@ -74,6 +74,7 @@ module ScreenObject
 
   def gesture(arg)
     Appium::TouchAction.new(driver).swipe(start_x: arg[0], start_y: arg[1], end_x: arg[2], end_y: arg[3], duration: arg[4]).perform
+    sleep 0.5
   rescue RuntimeError => e
     raise("Error during gesture \n Error Details: #{e}")
   end
