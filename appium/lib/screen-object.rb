@@ -53,7 +53,7 @@ module ScreenObject
     driver.back
   end
 
-  def wait_until(timeout = 5, message = nil, &block)
+  def wait_until(timeout = 30, message = nil, &block)
     default_wait = driver.default_wait
     driver.no_wait
     wait = Selenium::WebDriver::Wait.new(timeout: timeout, message: message)
@@ -61,7 +61,7 @@ module ScreenObject
     driver.set_wait(default_wait)
   end
 
-  def wait_step(timeout = 5, message = nil, &block)
+  def wait_step(timeout = 30, message = nil, &block)
     default_wait = driver.default_wait
     wait = Selenium::WebDriver::Wait.new(:timeout => driver.set_wait(timeout), :message => message)
     wait.until &block
@@ -135,7 +135,7 @@ module ScreenObject
   # @param timeout   [Integer] The amount of times in seconds we want to scroll to find the element
   # @return          [Boolean]
   def scroll_text_to_view(text, direction = :down, timeout = 40)
-    wait_until(timeout,'Unable to find element',&->{text_visible?(text, direction)})
+    wait_until(timeout,'Unable to find element', &-> { text_visible?(text, direction) } )
   end
 
   # Scrolls in a direction if a text that matches is not found. return false,  otherwise return true
@@ -144,9 +144,9 @@ module ScreenObject
   # @param text       [String] The text you are looking for on the screen
   # @param direction [symbol] The direction to search for an string
   # @return          [Boolean]
-  def text_visible?(text, direction)
+  def text_visible?(text, direction, xtr_scroll = false)
     if driver.find(text).displayed?
-      scroll(direction)
+      scroll(direction) if xtr_scroll
       true
     else
       scroll(direction)
@@ -170,14 +170,16 @@ module ScreenObject
   # @param text [String] the value to search for
   # @return [Nil]
   def click_text(text)
-    ScreenObject::Accessors::Element.get_element_by_text(text).click
+    driver.find(text).click
+  rescue Appium::Core::Wait::TimeoutError => e
+    CXA.fail_text("Could not find text \"#{text_val}\" on the current screen: #{e}")
   end
 
   # Click exact text that matches the first element with target value
   # @param text [String] the value to search for
   # @return [Nil]
   def click_exact_text(text)
-    ScreenObject::Accessors::Element.get_element_by_exact_text(text).click
+    click_text(text)
   end
 
   def drag_and_drop_element(source_locator,source_locator_value,target_locator,target_locator_value)
@@ -193,5 +195,9 @@ module ScreenObject
     rescue
       false
     end
+  end
+
+  def wait_for_text(timeout = 30, text)
+    wait_until(timeout,"text <<#{text} is not visible", -> {driver.find(text).displayed?})
   end
 end

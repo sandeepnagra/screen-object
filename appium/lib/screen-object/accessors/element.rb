@@ -104,20 +104,20 @@ module ScreenObject
       # this is the reason why there is a else condition and a rescue.
       # @param [direction] 'default :down, :up'
       # @return [boolean]
-      def element_visible?(direction = :down)
+      def element_visible?(direction = :down, xtr_scroll = false)
         default_wait = driver.default_wait
         driver.no_wait
         if exists?
           driver.set_wait(default_wait)
-          scroll(direction)
+          scroll(direction) if xtr_scroll
           true
         else
           scroll(direction)
           false
         end
-      rescue
-       scroll(direction)
-       false
+      rescue RuntimeError
+        scroll(direction)
+        false
       end
 
       # method for scrolling until element is visible.

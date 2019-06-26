@@ -35,7 +35,7 @@ module ScreenObject
         #  login_button # This will click on the button.
         # end
         define_method(name) do
-          ScreenObject::AppElements::Button.new(locator).tap
+          ScreenObject::AppElements::Button.new(locator).click
         end
 
         # generates method for checking the existence of the button.
@@ -364,13 +364,13 @@ module ScreenObject
         # end
 
         define_method("click_#{name}") do
-          ScreenObject::AppElements::Text.new(locator).tap
+          ScreenObject::AppElements::Text.new(locator).click
         end
 
         # generates method return text object.
         #
         define_method(name) do
-          ScreenObject::AppElements::Text.new(locator)
+          ScreenObject::AppElements::Text.new(locator).text
         end
 
         # generates method for checking if text exists on the screen.

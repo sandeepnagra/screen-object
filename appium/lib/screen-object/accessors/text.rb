@@ -19,7 +19,7 @@ module ScreenObject
     class Text < AppElements::Element
 
       def text
-        element.text()
+        element.text
       end
 
       def click
