@@ -14,35 +14,24 @@ See the License for the specific language governing permissions and limitations 
 ***********************************************************************************************************
 =end
 
+#require_relative File.expand_path('../element',__FILE__)
+
+
 module ScreenObject
   module AppElements
-    class Text < AppElements::Element
+    class Slider < AppElements::Element
 
-      def text
-        element.text
+      def set=(value)
+          element.send_keys value
       end
 
-      def tap
-        element.click
-      end
-
-      def dynamic_text_exists? dynamic_text
-         begin
-          dynamic_xpath(dynamic_text).displayed?
-        rescue
-          false
-        end
-      end
-
-      def dynamic_text dynamic_text
+      def enabled?
         begin
-          dynamic_xpath(dynamic_text).displayed?
-          text
+          element.enabled?
         rescue
           false
         end
       end
-
-    end
+     end
   end
 end
