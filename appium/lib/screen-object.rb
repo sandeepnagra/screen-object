@@ -138,6 +138,9 @@ module ScreenObject
     wait_until(timeout,'Unable to find element', &-> { text_visible?(text, direction) } )
   end
 
+  def scroll_rs_text_to_view(text, direction = :down, timeout = 40)
+    wait_until(timeout,'Unable to find element', &-> { text_visible?(text, direction) } )
+  end
   # Scrolls in a direction if a text that matches is not found. return false,  otherwise return true
   # Some locators on ios and android return true/false but a few would generate and error.
   # this is the reason why there is a else condition and a rescue.
@@ -145,6 +148,19 @@ module ScreenObject
   # @param direction [symbol] The direction to search for an string
   # @return          [Boolean]
   def text_visible?(text, direction, xtr_scroll = false)
+    if driver.find(text).displayed?
+      scroll(direction) if xtr_scroll
+      true
+    else
+      scroll(direction)
+      false
+    end
+  rescue Selenium::WebDriver::Error::NoSuchElementError
+    scroll(direction)
+    false
+  end
+
+  def rs_text_visible?(text, direction, xtr_scroll = false)
     if driver.find(text).displayed?
       scroll(direction) if xtr_scroll
       true
@@ -197,7 +213,77 @@ module ScreenObject
     end
   end
 
-  def wait_for_text(timeout = 30, text)
-    wait_until(timeout,"text <<#{text} is not visible", -> {driver.find(text).displayed?})
+  def wait_for_text(text, timeout = 30)
+    wait_until(timeout,"text << #{text} >> is not visible", & ->{driver.find("#{text}").displayed? })
+  end
+
+  def query(**query_str)
+    android_query(**query_str) if driver.device_is_android?
+    ios_query(**query_str) if driver.device_is_ios?
+  end
+
+  def android_query(*args)
+    converted_args = "new UiSelector()"
+    query_args = args.flatten.first
+    if query_args.count > 1
+      query_args.each do |arg|
+        identifier = convert_to_uia(arg.first)
+        value = (identifier.include? 'Matches') ? %(.*#{arg.last}) : %(#{arg.last})
+        converted_args << ".#{identifier}(\"""#{value}\""")"
+      end
+    else
+      identifier = convert_to_uia(query_args.keys.first)
+      value = (identifier.include? 'Matches') ?  %(.*#{query_args.values.first}) : %(#{query_args.values.first})
+      converted_args << ".#{identifier}(\"""#{value}\""")"
+    end
+    converted_args << ".instance(0);"
+    driver.find_element(:uiautomator, %(#{converted_args}))
+  end
+
+  def ios_query(*args)
+    converted_args = ""
+    query_args = args.flatten.first
+    if query_args.count > 1
+      query_args.each_index do |index|
+        identifier = convert_to_ios_predicate(query_args[index].first)
+        converted_args << "#{identifier}='#{query_args[index].last}'" if index == 0
+        converted_args << "AND #{identifier}='#{query_args[index].last}'"
+      end
+    else
+      identifier = convert_to_ios_predicate(query_args[index].first)
+      converted_args << "#{identifier}='#{query_args[index].last}'"
+    end
+    elements = driver.find_elements :predicate, converted_args
+    raise driver.no_such_element if elements.empty?
+
+    elements.first
+  end
+
+  def get_text_children(parent)
+    converted_identifier = convert_to_uia(parent)
+    pid = parent.values[0]
+    $driver.find_elements(:uiautomator,"new UiSelector().#{converted_identifier}(\"#{pid}\").childSelector(new UiSelector().className(\"android.widget.TextView\"));")
+  end
+
+  def convert_to_uia(val)
+    criteria = {
+        id: "resourceIdMatches",
+        class: "className",
+        description: "descriptionContains",
+        text: "text"
+    }
+
+    criteria[val]
+  end
+
+  def convert_to_ios_predicate(val)
+    criteria = {
+        id: "name",
+        class: "type",
+        accessibility_id: "id",
+        text: "value"
+    }
+
+    criteria[val]
   end
 end
