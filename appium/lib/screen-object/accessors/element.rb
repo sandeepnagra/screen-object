@@ -104,12 +104,11 @@ module ScreenObject
       # this is the reason why there is a else condition and a rescue.
       # @param [direction] 'default :down, :up'
       # @return [boolean]
-      def element_visible?(direction = :down, xtr_scroll = false)
+      def element_visible?(direction = :down)
         default_wait = driver.default_wait
         driver.no_wait
         if exists?
           driver.set_wait(default_wait)
-          scroll(direction) if xtr_scroll
           true
         else
           scroll(direction)
@@ -192,6 +191,10 @@ module ScreenObject
         else
           driver.find(value)
         end
+      end
+
+      def get_element_children_by_class(class_name)
+        element.find_elements(:class, class_name)
       end
 
       # Find the first element exactly matching value
