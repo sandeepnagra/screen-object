@@ -151,7 +151,7 @@ module ScreenObject
     dh = driver.find_element(id: 'action_dashboard').rect if driver.device_is_android?
     dh = driver.find_element(name: 'Dashboard').rect if driver.device_is_ios?
     bottom_nav_y = dh['y']
-    scroll(direction) if  (element_y + found_element.height >= bottom_nav_y) if direction == :down
+    scroll(direction) if  (element_y + found_element.height >= bottom_nav_y) && direction == :down
   end
 
   # Scrolls in a direction until a string that matches is visible above navigation bar,
@@ -167,7 +167,7 @@ module ScreenObject
     dh = driver.find_element(id: 'action_dashboard').rect if driver.device_is_android?
     dh = driver.find_element(name: 'Dashboard').rect if driver.device_is_ios?
     bottom_nav_y = dh['y']
-    scroll(direction) if  (element_y + found_element.height >= bottom_nav_y) if direction == :down
+    scroll(direction) if  (element_y + found_element.height >= bottom_nav_y) && direction == :down
   end
 
   # Scrolls in a direction if a text that matches is not found. return false,  otherwise return true
