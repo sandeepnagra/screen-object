@@ -18,7 +18,7 @@ describe ScreenObject do
     end
 
     it 'should wait for 5 seconds by default' do
-      expect(Selenium::WebDriver::Wait).to receive(:new).with(timeout: 5, message: nil).and_return(wait)
+      expect(Selenium::WebDriver::Wait).to receive(:new).with(timeout: 30, message: nil).and_return(wait)
       the_screen.wait_until { }
     end
 
