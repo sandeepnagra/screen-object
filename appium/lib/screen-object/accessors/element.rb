@@ -196,8 +196,8 @@ module ScreenObject
         end
       end
 
-      def get_element_children_by_class(class_name)
-        element.find_elements(:class, class_name)
+      def get_element_children(identifier, name)
+        element.find_elements(identifier, name)
       end
 
       # Find the first element exactly matching value
