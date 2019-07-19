@@ -83,13 +83,14 @@ module ScreenObject
   #
   # @param direction [symbol] The direction to search for an string
   # @param duration   [Integer] The amount of times in seconds we want to scroll to find the element
-  def scroll(direction = :down, duration = 1000)
+   # @param distance [float] between 0.1 to 0.9 down from [0.9 .. 0], up [01 .. 0.9]
+  def scroll(direction = :down, distance = 0.5, duration = 1000)
     size = driver.window_size
     x = size.width / 2
     y = size.height / 2
     loc = case direction
-          when :up then    [x, y * 0.5, x, (y + (y * 0.3)), duration]
-          when :down then  [x, y, x, y * 0.5, duration]
+          when :up then    [x, y, x, (y + (y * distance)), duration]
+          when :down then  [x, y, x, y * distance, duration]
           when :left then  [x * 0.6, y, x * 0.3, y, duration]
           when :right then [x * 0.3, y, x * 0.6, y, duration]
           else
@@ -118,7 +119,7 @@ module ScreenObject
   #
   # @param text      [String] The text you are looking for on the screen
   def scroll_down_to_text(text)
-    scroll_text_to_view(text)
+    scroll_text_to_view(text,:down)
   end
 
   # Scroll Up in a direction until a string that matches is found,
@@ -135,24 +136,25 @@ module ScreenObject
   # @param timeout   [Integer] The amount of times in seconds we want to scroll to find the element
   # @return          [Boolean]
   def scroll_text_to_view(text, direction = :down, timeout = 40)
-    wait_until(timeout,'Unable to find element', &-> { text_visible?(text, direction) } )
+    wait_until(timeout,'Unable to find element') do
+      return true if text_visible?(text)
+      scroll(direction)
+    end
   end
 
   # Scrolls in a direction if a text that matches is not found. return false,  otherwise return true
   # Some locators on ios and android return true/false but a few would generate and error.
   # this is the reason why there is a else condition and a rescue.
   # @param text       [String] The text you are looking for on the screen
-  # @param direction [symbol] The direction to search for an string
   # @return          [Boolean]
-  def text_visible?(text, direction)
+  def text_visible?(text)
+    driver.no_wait
     if driver.find(text).displayed?
       true
     else
-      scroll(direction)
       false
     end
   rescue Selenium::WebDriver::Error::NoSuchElementError
-    scroll(direction)
     false
   end
 

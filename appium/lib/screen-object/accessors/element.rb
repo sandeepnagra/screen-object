@@ -105,18 +105,16 @@ module ScreenObject
       # this is the reason why there is a else condition and a rescue.
       # @param [direction] 'default :down, :up'
       # @return [boolean]
-      def element_visible?(direction = :down)
+      def element_visible?
         default_wait = driver.default_wait
         driver.no_wait
         if exists?
           driver.set_wait(default_wait)
           true
         else
-          scroll(direction)
           false
         end
       rescue RuntimeError
-        scroll(direction)
         false
       end
 
@@ -124,14 +122,20 @@ module ScreenObject
       # this will NOT return any value.
       # @param [direction] 'Down', 'up'
       def scroll_element_to_view(direction = :down, time_out = 30)
-        wait_until(time_out,'Unable to find element',&->{element_visible?(direction)})
+        wait_until(time_out,'Unable to find element') do
+          return true if element_visible?
+          scroll(direction)
+        end
       end
 
       # method for scrolling until element is visible and click.
       # this will NOT return any value.
       # @param [direction] 'Down', 'up'
       def scroll_element_to_view_tap(direction= :down, time_out = 40)
-        wait_until(time_out,'Unable to find element',&->{element_visible?(direction)})
+        wait_until(time_out,'Unable to find element') do
+          return true if element_visible?
+          scroll(direction)
+        end
         click
       end
       alias_method :scroll_element_to_view_click, :scroll_element_to_view_tap
