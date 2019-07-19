@@ -10,7 +10,7 @@ describe "Interface" do
     it "should tap on the button" do
       expect(button).to receive(:element).and_return(selenium_object)
       expect(selenium_object).to receive(:click).and_return(true)
-      expect(button.tap).to eq(true)
+      expect(button.click).to eq(true)
     end
   end
 

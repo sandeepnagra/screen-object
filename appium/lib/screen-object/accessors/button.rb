@@ -21,9 +21,10 @@ module ScreenObject
   module AppElements
     class Button < AppElements::Element
 
-      def click
+      def tap
           element.click
       end
+      alias_method :click, :tap
 
       def enabled?
         begin

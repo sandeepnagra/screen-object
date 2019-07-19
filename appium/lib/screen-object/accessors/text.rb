@@ -22,9 +22,10 @@ module ScreenObject
         element.text
       end
 
-      def click
+      def tap
         element.click
       end
+      alias_method :click, :tap
 
       def dynamic_text_exists? dynamic_text
          begin

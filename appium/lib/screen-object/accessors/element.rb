@@ -37,16 +37,17 @@ module ScreenObject
         $driver
       end
 
-      def click
+      def tap
           element.click
       end
+      alias_method :click, :tap
 
       def value
           element.value
       end
 
       def exists?
-        driver.no_wait
+        driver.no_wait if driver
         begin
           element.displayed?
         rescue
@@ -129,10 +130,11 @@ module ScreenObject
       # method for scrolling until element is visible and click.
       # this will NOT return any value.
       # @param [direction] 'Down', 'up'
-      def scroll_element_to_view_click(direction= :down, time_out = 40)
+      def scroll_element_to_view_tap(direction= :down, time_out = 40)
         wait_until(time_out,'Unable to find element',&->{element_visible?(direction)})
         click
       end
+      alias_method :scroll_element_to_view_click, :scroll_element_to_view_tap
 
       # method for swiping a specific element on the screen.
       # this is the reason why there is a else condition and a rescue.
@@ -173,7 +175,7 @@ module ScreenObject
         swipe_screen_element(:right, 2000)
       end
 
-      def scroll_for_dynamic_element_click (expected_text)
+      def scroll_for_dynamic_element_tap (expected_text)
         if dynamic_xpath(expected_text).displayed?
           click
         else
@@ -181,6 +183,7 @@ module ScreenObject
           click
         end
       end
+      alias_method :scroll_for_dynamic_element_click, :scroll_for_dynamic_element_tap
 
       # Find the first element containing value
       # @param value [String] the value to search for

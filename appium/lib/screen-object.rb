@@ -61,11 +61,11 @@ module ScreenObject
     driver.set_wait(default_wait) if driver
   end
 
-  def wait_step(timeout = 30, message = nil, &block)
-    default_wait = driver.default_wait
+  def wait_step(timeout = 5, message = nil, &block)
+    default_wait = driver.default_wait if driver
     wait = Selenium::WebDriver::Wait.new(:timeout => driver.set_wait(timeout), :message => message)
     wait.until &block
-    driver.set_wait(default_wait)
+    driver.set_wait(default_wait) if driver
   end
 
   def enter
@@ -138,38 +138,6 @@ module ScreenObject
     wait_until(timeout,'Unable to find element', &-> { text_visible?(text, direction) } )
   end
 
-  # Scrolls in a direction until a element that matches is visible above navigation bar,
-  # @param el      [Element] The text you are looking for on the screen
-  # @param direction [symbol] The direction to search for an string
-  # @param timeout   [Integer] The amount of times in seconds we want to scroll to find the element
-  # @return          [nil]
-  def scroll_rs_element_to_view(el ={}, direction = :down, timeout = 30)
-    wait_until(timeout,'Unable to find element',&->{element_visible?(el, direction)})
-    # scroll element above nav bar
-    found_element = driver.find_element(el).rect
-    element_y = found_element.y
-    dh = driver.find_element(id: 'action_dashboard').rect if driver.device_is_android?
-    dh = driver.find_element(name: 'Dashboard').rect if driver.device_is_ios?
-    bottom_nav_y = dh['y']
-    scroll(direction) if  (element_y + found_element.height >= bottom_nav_y) && direction == :down
-  end
-
-  # Scrolls in a direction until a string that matches is visible above navigation bar,
-  #
-  # @param text      [String] The text you are looking for on the screen
-  # @param direction [symbol] The direction to search for an string
-  # @param timeout   [Integer] The amount of times in seconds we want to scroll to find the element
-  # @return          [Boolean]
-  def scroll_rs_text_to_view(text, direction = :down, timeout = 40)
-    wait_until(timeout,'Unable to find element', &-> { text_visible?(text, direction) } )
-    found_element = driver.find("#{text}").rect
-    element_y = found_element.y
-    dh = driver.find_element(id: 'action_dashboard').rect if driver.device_is_android?
-    dh = driver.find_element(name: 'Dashboard').rect if driver.device_is_ios?
-    bottom_nav_y = dh['y']
-    scroll(direction) if  (element_y + found_element.height >= bottom_nav_y) && direction == :down
-  end
-
   # Scrolls in a direction if a text that matches is not found. return false,  otherwise return true
   # Some locators on ios and android return true/false but a few would generate and error.
   # this is the reason why there is a else condition and a rescue.
@@ -200,18 +168,20 @@ module ScreenObject
   # Click on the first element with target value that contains search value
   # @param text [String] the value to search for
   # @return [Nil]
-  def click_text(text)
+  def tap_text(text)
     driver.find(text).click
   rescue Appium::Core::Wait::TimeoutError => e
     CXA.fail_text("Could not find text \"#{text_val}\" on the current screen: #{e}")
   end
+  alias_method :click_text, :tap_text
 
   # Click exact text that matches the first element with target value
   # @param text [String] the value to search for
   # @return [Nil]
-  def click_exact_text(text)
-    click_text(text)
+  def tap_exact_text(text)
+    tap_text(text)
   end
+  alias_method :click_exact_text, :tap_exact_text
 
   def drag_and_drop_element(source_locator,source_locator_value,target_locator,target_locator_value)
     l_draggable = driver.find_element(source_locator,source_locator_value)
