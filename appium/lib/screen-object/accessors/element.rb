@@ -133,10 +133,14 @@ module ScreenObject
       # @param [direction] 'Down', 'up'
       def scroll_element_to_view_tap(direction= :down, time_out = 40)
         wait_until(time_out,'Unable to find element') do
-          return true if element_visible?
-          scroll(direction)
+          if element_visible?
+            click
+            true
+          else
+            scroll(direction)
+            false
+          end
         end
-        click
       end
       alias_method :scroll_element_to_view_click, :scroll_element_to_view_tap
 
