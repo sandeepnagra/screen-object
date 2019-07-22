@@ -106,10 +106,10 @@ module ScreenObject
       # @param [direction] 'default :down, :up'
       # @return [boolean]
       def element_visible?
-        default_wait = driver.default_wait
-        driver.no_wait
+        default_wait = driver.default_wait if driver
+        driver.no_wait if driver
         if exists?
-          driver.set_wait(default_wait)
+          driver.set_wait(default_wait) if driver
           true
         else
           false

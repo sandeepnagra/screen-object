@@ -119,7 +119,7 @@ module ScreenObject
   #
   # @param text      [String] The text you are looking for on the screen
   def scroll_down_to_text(text)
-    scroll_text_to_view(text,:down)
+    scroll_text_to_view(text, :down)
   end
 
   # Scroll Up in a direction until a string that matches is found,
