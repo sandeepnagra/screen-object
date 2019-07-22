@@ -148,7 +148,7 @@ module ScreenObject
   # @param text       [String] The text you are looking for on the screen
   # @return          [Boolean]
   def text_visible?(text)
-    driver.no_wait
+    driver.no_wait if driver
     if driver.find(text).displayed?
       true
     else
@@ -170,10 +170,12 @@ module ScreenObject
   # Click on the first element with target value that contains search value
   # @param text [String] the value to search for
   # @return [Nil]
-  def tap_text(text)
-    driver.find(text).click
-  rescue Appium::Core::Wait::TimeoutError => e
-    CXA.fail_text("Could not find text \"#{text_val}\" on the current screen: #{e}")
+  def tap_text(text, str_pattern = "*")
+    if driver.device_is_ios?
+      driver.string_visible_contains(str_pattern, text).display.nil?
+    else
+      driver.complex_find_contains(str_pattern,text).display.nil?
+    end
   end
   alias_method :click_text, :tap_text
 
@@ -181,7 +183,9 @@ module ScreenObject
   # @param text [String] the value to search for
   # @return [Nil]
   def tap_exact_text(text)
-    tap_text(text)
+    driver.find(text).click
+  rescue Appium::Core::Wait::TimeoutError => e
+    raise("Could not find text \"#{text_val}\" on the current screen: #{e}")
   end
   alias_method :click_exact_text, :tap_exact_text
 
