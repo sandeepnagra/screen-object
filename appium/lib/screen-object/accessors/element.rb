@@ -203,16 +203,27 @@ module ScreenObject
         end
       end
 
+      # Find all element children
+      # @param identifier [symbol] the identifier to search for
+      # @param name [String] element name to search for
+      # @return [Elements]
       def get_children(identifier, name)
         element.find_elements(identifier, name)
       end
 
-      def get_parent(identifier, name)
-        element.find_elements(identifier, name)
+      # Find all element siblings
+      # @param str_xpath [String] the parent xpath identifier to search for
+      # @param parent_xpath [String] the xpath identifier to search for
+      # @return [Elements]
+      def get_parent(str_xpath, parent_xpath)
+        element.find_elements(xpath, "//ancestor::*[*[#{str_xpath}]][#{parent_xpath}]")
       end
 
-      def get_siblings(identifier, name)
-        element.find_elements(identifier, name)
+      # Find all element siblings
+      # @param sibling_xpath [String] the xpath identifier to search for
+      # @return [Elements] an array of elements
+      def get_siblings(sibling_xpath)
+        element.find_elements(xpath:"*//following-sibling::#{sibling_xpath}")
       end
 
       # Find the first element exactly matching value
