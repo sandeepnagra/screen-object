@@ -170,11 +170,11 @@ module ScreenObject
   # Click on the first element with target value that contains search value
   # @param text [String] the value to search for
   # @return [Nil]
-  def tap_text(text, str_pattern = "*")
+  def tap_text(str_pattern = "*", text)
     if driver.device_is_ios?
-      driver.string_visible_contains(str_pattern, text).display.nil?
+      driver.string_visible_contains(str_pattern, text).click
     else
-      driver.complex_find_contains(str_pattern,text).display.nil?
+      driver.complex_find_contains(str_pattern,text).click
     end
   end
   alias_method :click_text, :tap_text
