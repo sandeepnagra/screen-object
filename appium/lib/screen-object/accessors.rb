@@ -82,7 +82,6 @@ module ScreenObject
         #  scroll_down_to_click_login_button # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. button.
         define_method("scroll_down_to_tap_#{name}") do
-          # direction = options[:direction] || 'down'
           ScreenObject::AppElements::Button.new(locator).scroll_element_to_view_tap
         end
         # alias :"scroll_down_to_click_#{name}"  :"scroll_down_to_tap_#{name}"
