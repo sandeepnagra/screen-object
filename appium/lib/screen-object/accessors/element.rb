@@ -125,6 +125,7 @@ module ScreenObject
         wait_until(time_out,'Unable to find element') do
           return true if element_visible?
           scroll(direction)
+          false
         end
       end
 
@@ -138,6 +139,7 @@ module ScreenObject
             true
           else
             scroll(direction)
+            false
           end
         end
       end
