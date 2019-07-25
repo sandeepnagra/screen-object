@@ -81,10 +81,10 @@ module ScreenObject
         # def scroll_button
         #  scroll_down_to_click_login_button # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. button.
-        define_method("scroll_down_to_click_#{name}") do
-          # direction = options[:direction] || 'down'
-          ScreenObject::AppElements::Button.new(locator).scroll_element_to_view_click
+        define_method("scroll_down_to_tap_#{name}") do
+          ScreenObject::AppElements::Button.new(locator).scroll_element_to_tap
         end
+         alias_method :"scroll_down_to_click_#{name}",  :"scroll_down_to_tap_#{name}"
 
         # generates method for scrolling on the screen and click on the button.
         # scroll to the first element with locator and click.
@@ -93,10 +93,10 @@ module ScreenObject
         # def scroll_button
         #  scroll_up_to_click_login_button # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. button.
-        define_method("scroll_up_to_click_#{name}") do
-          # direction = options[:direction] || 'up'
-          ScreenObject::AppElements::Button.new(locator).scroll_element_to_view_click(:up)
+        define_method("scroll_up_to_tap_#{name}") do
+          ScreenObject::AppElements::Button.new(locator).scroll_element_to_view_tap(:up)
         end
+        alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
 
         # generates method for scrolling down on the screen to the button.
         # scroll to the first element with locator.
@@ -137,8 +137,7 @@ module ScreenObject
         #                                          for android application.
         # end
         define_method("#{name}_scroll_dynamic") do |text|
-          # direction = options[:direction] || 'down'
-          ScreenObject::AppElements::Button.new(locator).scroll_for_dynamic_element_click(text)
+          ScreenObject::AppElements::Button.new(locator).scroll_for_dynamic_element_tap(text)
         end
 
         # generates method for scrolling on Android application screen and click on button. This method should be used when button text is static...
@@ -157,7 +156,7 @@ module ScreenObject
         #                                 button on the screen and click on it.
         # end
         define_method("#{name}_scroll_") do |text|
-          ScreenObject::AppElements::Button.new(locator).click_text(text)
+          ScreenObject::AppElements::Button.new(locator).tap_text(text)
         end
 
         # generates method for scrolling on Android application screen and click on button. This method should be used when button text is dynamic......
@@ -179,7 +178,7 @@ module ScreenObject
         #
         # end
         define_method("#{name}_scroll_dynamic_") do |text|
-          ScreenObject::AppElements::Button.new(locator).click_dynamic_text(text)
+          ScreenObject::AppElements::Button.new(locator).tap_dynamic_text(text)
         end
 
         # generates method for scrolling on the screen and click on the button.
@@ -198,7 +197,7 @@ module ScreenObject
         #
         # end
         define_method("#{name}_scroll_exact_") do |text|
-          ScreenObject::AppElements::Button.new(locator).click_exact_text(text)
+          ScreenObject::AppElements::Button.new(locator).tap_exact_text(text)
         end
 
         # generates method for scrolling on the screen and click on the button.
@@ -219,7 +218,7 @@ module ScreenObject
         #
         # end
         define_method("#{name}_scroll_dynamic_exact_") do |text|
-          ScreenObject::AppElements::Button.new(locator).click_dynamic_exact_text(text)
+          ScreenObject::AppElements::Button.new(locator).tap_dynamic_exact_text(text)
         end
 
         # returns the underlying ScreenObject element to allow
@@ -310,10 +309,10 @@ module ScreenObject
         # def scroll_checkbox
         #  scroll_down_to_click_email_checkbox # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. checkbox.
-        define_method("scroll_down_to_click_#{name}") do
-          # direction = options[:direction] || 'down'
-          ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_view_click
+        define_method("scroll_down_to_tap_#{name}") do
+          ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_view_tap(:down)
         end
+        alias_method :"scroll_down_to_click_#{name}", :"scroll_down_to_tap_#{name}"
 
         # generates method for scrolling on the screen and click on the CheckBox.
         # scroll to the first CheckBox with locator and click.
@@ -322,10 +321,10 @@ module ScreenObject
         # def scroll_checkbox
         #  scroll_up_to_click_email_checkbox # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. checkbox.
-        define_method("scroll_up_to_click_#{name}") do
-          # direction = 'up'
-          ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_view_click(:up)
+        define_method("scroll_up_to_tap_#{name}") do
+          ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_view_tap(:up)
         end
+        alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
 
         # generates method for scrolling on the screen until checkbox is visible.
         # scroll to the first CheckBox with locator.
@@ -335,7 +334,6 @@ module ScreenObject
         #  scroll_down_to_email_checkbox # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. checkbox.
         define_method("scroll_down_to_#{name}") do
-          # direction = 'down'
           ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_view
         end
 
@@ -347,7 +345,6 @@ module ScreenObject
         #  scroll_up_to_email_checkbox # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. checkbox.
         define_method("scroll_up_to_#{name}") do
-          # direction = 'up'
           ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_view(:up)
         end
       end
@@ -363,14 +360,15 @@ module ScreenObject
         #  login_button # This will click on the button.
         # end
 
-        define_method("click_#{name}") do
+        define_method("tap_#{name}") do
           ScreenObject::AppElements::Text.new(locator).tap
         end
+        alias_method :"click_#{name}", :"tap_#{name}"
 
         # generates method return text object.
         #
         define_method(name) do
-          ScreenObject::AppElements::Text.new(locator)
+          ScreenObject::AppElements::Text.new(locator).text
         end
 
         # generates method for checking if text exists on the screen.
@@ -394,7 +392,7 @@ module ScreenObject
         #   welcome_text # This will click on the Welcome text on the screen.
         # end
         define_method("#{name}") do
-          ScreenObject::AppElements::Text.new(locator).click
+          ScreenObject::AppElements::Text.new(locator).tap
         end
 
         # generates method for retrieving text of the object.
@@ -416,10 +414,11 @@ module ScreenObject
         # def scroll_text
         #  scroll_up_to_click_first_name # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. Text.
-        define_method("scroll_up_to_click_#{name}") do
+        define_method("scroll_up_to_tap_#{name}") do
           # direction = options[:direction] || 'up'
-          ScreenObject::AppElements::Text.new(locator).scroll_element_to_view_click(:up)
+          ScreenObject::AppElements::Text.new(locator).scroll_element_to_view_tap(:up)
         end
+        alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
 
         # generates method for scrolling on the screen and click on the text.
         # scroll to the first CheckBox with locator and click.
@@ -428,11 +427,10 @@ module ScreenObject
         # def scroll_text
         #  scroll_down_to_click_first_name # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e. Text.
-        define_method("scroll_down_to_click_#{name}") do
-          # direction = 'down'
-          ScreenObject::AppElements::Text.new(locator).scroll_element_to_view_click(:down)
+        define_method("scroll_down_to_tap_#{name}") do
+          ScreenObject::AppElements::Text.new(locator).scroll_element_to_view_tap(:down)
         end
-
+        alias_method :"scroll_down_to_click_#{name}", :"scroll_down_to_tap_#{name}"
         # generates method for scrolling text object to view.
         # this will NOT return any value.
         # @example check if 'Welcome' text is displayed on the page
@@ -442,7 +440,6 @@ module ScreenObject
         #   scroll_down_to_welcome_text  # This will scroll down to the Welcome text on the screen.
         # end
         define_method("scroll_down_to_#{name}") do
-          # direction = options[:direction] || 'down'
           ScreenObject::AppElements::Text.new(locator).scroll_element_to_view(:down)
         end
 
@@ -657,10 +654,11 @@ module ScreenObject
         # def scroll_welcome_text_field
         #  scroll_down_to_click_welcome_textfield # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e.textField                 on the object i.e. image.
-        define_method("scroll_down_to_click_#{name}") do
+        define_method("scroll_down_to_tap_#{name}") do
           # direction = 'down'
-          ScreenObject::AppElements::TextField.new(locator).scroll_element_to_view_click
+          ScreenObject::AppElements::TextField.new(locator).scroll_element_to_view_tap
         end
+        alias_method :"scroll_down_to_click_#{name}",  :"scroll_down_to_tap_#{name}"
 
         # generates method for scrolling on the screen and click on the image.
         # scroll to the first element with locator and click to set focus.
@@ -669,10 +667,10 @@ module ScreenObject
         # def scroll_welcome_text_field
         #  scroll_up_to_click_welcome_textfield  # This will not return any value. It will scroll on the screen until object found and click
         #                        on the object i.e.textField.
-        define_method("scroll_up_to_click_#{name}") do
-          # direction = 'up'
-          ScreenObject::AppElements::TextField.new(locator).scroll_element_to_view_click(:up)
+        define_method("scroll_up_to_tap_#{name}") do
+          ScreenObject::AppElements::TextField.new(locator).scroll_element_to_view_tap(:up)
         end
+        alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
       end
 
     # Image class generates all the methods related to different operations that can be performed on the image object on the screen.
@@ -699,7 +697,7 @@ module ScreenObject
       #  logo # This will click on the logo text on the screen.
       # end
       define_method("#{name}") do
-        ScreenObject::AppElements::Image.new(locator).click
+        ScreenObject::AppElements::Image.new(locator).tap
       end
 
       # returns the underlying ScreenObject element to allow
@@ -748,10 +746,10 @@ module ScreenObject
       # def scroll_down_image
       #  scroll_down_to_click_login_image # This will not return any value. It will scroll on the screen until object found and click
       #                        on the object i.e. Image.                  on the object i.e. image.
-      define_method("scroll_down_to_click_#{name}") do
-        # direction = 'down'
-        ScreenObject::AppElements::Image.new(locator).scroll_element_to_view_click
+      define_method("scroll_down_to_tap_#{name}") do
+        ScreenObject::AppElements::Image.new(locator).scroll_element_to_view_tap
       end
+      alias_method :"scroll_down_to_click_#{name}", :"scroll_down_to_tap_#{name}"
 
       # generates method for scrolling on the screen and click on the image.
       # scroll to the first element with locator and click.
@@ -760,11 +758,10 @@ module ScreenObject
       # def scroll_image
       #  scroll_up_to_click_login_image # This will not return any value. It will scroll on the screen until object found and click
       #                        on the object i.e. Image.
-      define_method("scroll_up_to_click_#{name}") do
-        # direction = 'up'
-        ScreenObject::AppElements::Image.new(locator).scroll_element_to_view_click(:up)
+      define_method("scroll_up_to_tap_#{name}") do
+        ScreenObject::AppElements::Image.new(locator).scroll_element_to_view_tap(:up)
       end
-
+      alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
     end
 
     # table class generates all the methods related to different operations that can be performed on the table object on the screen.
@@ -819,10 +816,11 @@ module ScreenObject
         # element(:login_button,"UIButtonField/UIButtonFieldtext")
         #   click_login_button
 
-        define_method("click_#{name}") do
+        define_method("tap_#{name}") do
           # direction = options[:direction] || 'down'
-          ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_click
+          ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_tap
         end
+        alias_method :"click_#{name}", :"tap_#{name}"
 
         # generates method for scrolling down on both Android and iOS application screen and click on element.
         # scroll to the first element with locator and click on it.
@@ -830,10 +828,10 @@ module ScreenObject
         # element(:login_button,"UIButtonField/UIButtonFieldtext")
         #   scroll_down_to_click_login_button
 
-        define_method("scroll_down_to_click_#{name}") do
-          # direction = 'up'
-          ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_click
+        define_method("scroll_down_to_tap_#{name}") do
+          ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_tap
         end
+        alias_method :"scroll_down_to_click_#{name}", :"scroll_down_to_tap_#{name}"
 
         # generates method for scrolling down on both Android and iOS application screen and click on element.
         # scroll to the first element with locator and click on it.
@@ -841,10 +839,10 @@ module ScreenObject
         # element(:login_button,"UIButtonField/UIButtonFieldtext")
         #   scroll_up_to_click_login_button
 
-        define_method("scroll_up_to_click_#{name}") do
-          # direction = 'up'
-          ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_click(:up)
+        define_method("scroll_up_to_tap_#{name}") do
+          ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_tap(:up)
         end
+        alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
 
         # generates method for scrolling down on both Android and iOS application screen.
         # scroll to the first element with locator.
@@ -853,7 +851,6 @@ module ScreenObject
         #   scroll_down_to_login_button
 
         define_method("scroll_down_to_#{name}") do
-          # direction = 'down'
           ScreenObject::AppElements::Element.new(locator).scroll_element_to_view(:down)
         end
 
@@ -863,7 +860,6 @@ module ScreenObject
         # element(:login_button,"UIButtonField/UIButtonFieldtext")
         #   scroll_up_to_login_button
         define_method("scroll_up_to_#{name}") do
-          # direction = 'up'
           ScreenObject::AppElements::Element.new(locator).scroll_element_to_view(:up)
         end
 
@@ -874,7 +870,6 @@ module ScreenObject
         # element(:vertical_scroll_view, class: 'android.support.v7.widget.RecyclerView')
         # vertical_scroll_view_scroll_down
         define_method("#{name}_scroll_down") do
-          # direction = options[:direction] || 'down'
           ScreenObject::AppElements::Element.new(locator).scroll_element_down
         end
 
@@ -885,7 +880,6 @@ module ScreenObject
         # element(:vertical_scroll_view, class: 'android.support.v7.widget.RecyclerView')
         # vertical_scroll_view_scroll_up
         define_method("#{name}_scroll_up") do
-          # direction = options[:direction] || 'up'
           ScreenObject::AppElements::Element.new(locator).scroll_element_up
         end
 
@@ -896,7 +890,6 @@ module ScreenObject
         # element(:change_box, id: 'horizontal_scroll_view')
         # change_box_swipe_left
         define_method("#{name}_swipe_left") do
-          # direction = options[:direction] || 'left'
           ScreenObject::AppElements::Element.new(locator).swipe_element_left
         end
 
@@ -907,7 +900,6 @@ module ScreenObject
         # element(:change_box, id: 'horizontal_scroll_view')
         # change_box_swipe_right
         define_method("#{name}_swipe_right") do
-          # direction = options[:direction] || 'right'
           ScreenObject::AppElements::Element.new(locator).swipe_element_right
         end
       end

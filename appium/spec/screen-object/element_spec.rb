@@ -1,5 +1,4 @@
 require_relative '../spec_helper'
-
 describe "Interface" do
 
    locator = "name~dummy"
@@ -68,25 +67,25 @@ describe "Interface" do
    #   end
    # end
 
-   context "interaction with scroll_for_element_click method" do
+   context "interaction with scroll_element_to_view_tap method" do
      it "should click on object if it does exists on the first page" do
        expect(element).to receive(:element).and_return(selenium_driver)
        expect(selenium_driver).to receive(:displayed?).and_return(true)
        expect(element).to receive(:element).and_return(selenium_driver)
        expect(selenium_driver).to receive(:click).and_return(true)
-       expect(element.scroll_for_element_click).to eql (true)
+       expect(element.scroll_element_to_view).to eql (true)
      end
 
    end
 
-   context "interaction with scroll_for_element_click method" do
+   context "interaction with scroll_element_to_view_tap method" do
      it "should scroll for element and click.." do
        expect(element).to receive(:element).and_return(selenium_driver)
        expect(selenium_driver).to receive(:displayed?).and_return(false)
        expect(element).to receive(:scroll).and_return(selenium_driver)
        expect(element).to receive(:element).and_return(selenium_driver)
        expect(selenium_driver).to receive(:click).and_return(true)
-       expect(element.scroll_for_element_click).to eql (true)
+       expect(element.scroll_element_to_view_tap).to eql (true)
      end
 
    end
@@ -114,22 +113,22 @@ describe "Interface" do
 
    end
 
-   context "interaction with click_text method" do
+   context "interaction with tap_text method" do
      it "should click on object if it does exists on the first page" do
        expect(element).to receive(:exists?).and_return(true)
        expect(element).to receive(:click).and_return(true)
-       expect(element.click_text("text")).to eq (true)
+       expect(element.tap_text("text")).to eq (true)
      end
 
    end
 
-   context "interaction with click_text method" do
+   context "interaction with tap_text method" do
      it "should click on object if it does exists on the first page" do
        expect(element).to receive(:exists?).and_return(false)
        expect(element).to receive(:scroll_to_text).with("text").and_return(selenium_driver)
        expect(element).to receive(:element).and_return(selenium_driver)
        expect(selenium_driver).to receive(:click).and_return(true)
-       expect(element.click_text("text")).to eq (true)
+       expect(element.tap_text("text")).to eq (true)
      end
 
    end
@@ -149,8 +148,8 @@ describe "Interface" do
        expect(element).to receive(:dynamic_text_exists?).with("text").and_return(false)
        expect(element).to receive(:scroll_to_text).with("text").and_return(selenium_driver)
        expect(element).to receive(:element).and_return(selenium_driver)
-       expect(selenium_driver).to receive(:click).and_return(true)
-       expect(element.click_dynamic_text("text")).to eq (true)
+       expect(selenium_driver).to receive(:tap).and_return(true)
+       expect(ScreenObject.tap_dynamic_text("text")).to eq (true)
      end
 
    end
@@ -160,7 +159,7 @@ describe "Interface" do
      it "should click on object if it does exists on the first page" do
        expect(element).to receive(:exists?).and_return(true)
        expect(element).to receive(:click).and_return(true)
-       expect(element.click_exact_text("text")).to eq (true)
+       expect(ScreenObject.tap_exact_text("text")).to eq (true)
      end
 
    end
@@ -171,7 +170,7 @@ describe "Interface" do
        expect(element).to receive(:scroll_to_exact_text).with("text").and_return(selenium_driver)
        expect(element).to receive(:element).and_return(selenium_driver)
        expect(selenium_driver).to receive(:click).and_return(true)
-       expect(element.click_exact_text("text")).to eq (true)
+       expect(element.tap_exact_text("text")).to eq (true)
      end
 
    end
@@ -181,7 +180,7 @@ describe "Interface" do
        expect(element).to receive(:dynamic_text_exists?).with("text").and_return(true)
        expect(element).to receive(:element).and_return(selenium_driver)
        expect(selenium_driver).to receive(:click).and_return(true)
-       expect(element.click_dynamic_exact_text("text")).to eq (true)
+       expect(ScreenObject.tap_exact_text("text")).to eq (true)
      end
 
    end
@@ -190,10 +189,9 @@ describe "Interface" do
      it "should click on object if it does exists on the first page" do
        expect(element).to receive(:dynamic_text_exists?).with("text").and_return(false)
        expect(element).to receive(:scroll_to_exact_text).with("text").and_return(selenium_driver)
-
        expect(element).to receive(:element).and_return(selenium_driver)
-       expect(selenium_driver).to receive(:click).and_return(true)
-       expect(element.click_dynamic_exact_text("text")).to eq (true)
+       expect(selenium_driver).to receive(:tap).and_return(true)
+       expect(ScreenObject.tap_exact_text("text")).to eq (true)
      end
 
    end

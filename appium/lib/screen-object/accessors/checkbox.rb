@@ -28,7 +28,7 @@ module ScreenObject
       end 
 
       def check
-        element.click unless checked?
+        element.tap unless checked?
       end
 
       def uncheck

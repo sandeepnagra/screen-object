@@ -1,6 +1,5 @@
 require_relative '../spec_helper'
 require 'selenium-webdriver'
-
 class TestScreen
   include ScreenObject
 end
@@ -17,8 +16,8 @@ describe ScreenObject do
       allow(wait).to receive(:until)
     end
 
-    it 'should wait for 5 seconds by default' do
-      expect(Selenium::WebDriver::Wait).to receive(:new).with(timeout: 5, message: nil).and_return(wait)
+    it 'should wait for 30 seconds by default' do
+      expect(Selenium::WebDriver::Wait).to receive(:new).with(timeout: 30, message: nil).and_return(wait)
       the_screen.wait_until { }
     end
 

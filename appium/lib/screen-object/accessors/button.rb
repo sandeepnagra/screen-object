@@ -24,6 +24,7 @@ module ScreenObject
       def tap
           element.click
       end
+      alias_method :click, :tap
 
       def enabled?
         begin
