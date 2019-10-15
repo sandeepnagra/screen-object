@@ -22,16 +22,14 @@ module ScreenObject
     class Button < AppElements::Element
 
       def tap
-          element.click
+        element.click
       end
       alias_method :click, :tap
 
       def enabled?
-        begin
-          element.enabled?
-        rescue
-          false
-        end
+        element.enabled?
+      rescue
+        false
       end
 
      end

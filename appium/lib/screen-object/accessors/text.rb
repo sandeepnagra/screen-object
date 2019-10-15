@@ -28,20 +28,16 @@ module ScreenObject
       alias_method :click, :tap
 
       def dynamic_text_exists? dynamic_text
-         begin
-          dynamic_xpath(dynamic_text).displayed?
-        rescue
-          false
-        end
+        dynamic_xpath(dynamic_text).displayed?
+      rescue
+        false
       end
 
       def dynamic_text dynamic_text
-        begin
-          dynamic_xpath(dynamic_text).displayed?
-          text
-        rescue
-          false
-        end
+        dynamic_xpath(dynamic_text).displayed?
+        text
+      rescue
+        false
       end
 
     end

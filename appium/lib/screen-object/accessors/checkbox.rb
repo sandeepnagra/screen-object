@@ -20,12 +20,8 @@ module ScreenObject
     class CheckBox < AppElements::Element
 
       def checked?
-        if element.attribute('checked') == 'true'
-          return true
-        else
-          return false
-        end
-      end 
+        element.attribute('checked') == 'true'
+      end
 
       def check
         element.tap unless checked?

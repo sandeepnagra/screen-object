@@ -14,10 +14,4 @@ See the License for the specific language governing permissions and limitations 
 ***********************************************************************************************************
 =end
 
-require 'screen-object/accessors/element'
-require 'screen-object/accessors/button'
-require 'screen-object/accessors/image'
-require 'screen-object/accessors/text'
-require 'screen-object/accessors/textfield'
-require 'screen-object/accessors/checkbox'
-require 'screen-object/accessors/table'
+Dir["screen-object/accessors/*.rb"].each(&method(:require))

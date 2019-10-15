@@ -79,6 +79,21 @@ module ScreenObject
     raise("Error during gesture \n Error Details: #{e}")
   end
 
+  # Uses an Appium TouchAction with the described points, potentially with an offset.
+  # Mimics '.click' but does not need an element, but could pass in element.location to do it, or just [100,200]
+  #
+  # @param coordinates [Array] A pair of 2 integers that can be used to describe a point on the screen
+  # @param offset_x    [Integer] How much to the left or right of the point you identified you want to actually touch
+  # @param offset_y    [Integer] How much to the top or bottom of the point you identified you want to actually touch
+  def touch_point(coordinates, offset_x = 0, offset_y = 0)
+    x = coordinates[0] + offset_x
+    y = coordinates[1] + offset_y
+
+    action = Appium::TouchAction.new
+    action.press(x: x, y: y).wait(10).release
+    action.perform
+  end
+
   # Scrolls device screen in a direction
   #
   # @param direction [symbol] The direction to search for an string
@@ -89,12 +104,11 @@ module ScreenObject
     x = size.width / 2
     y = size.height / 2
     loc = case direction
-          when :up then    [x, y, x, (y + (y * distance)), duration]
-          when :down then  [x, y, x, y * distance, duration]
-          when :left then  [x * 0.6, y, x * 0.3, y, duration]
+          when :up    then [x, y, x, (y + (y * distance)), duration]
+          when :down  then [x, y, x, y * distance, duration]
+          when :left  then [x * 0.6, y, x * 0.3, y, duration]
           when :right then [x * 0.3, y, x * 0.6, y, duration]
-          else
-            raise('Only up, down, left and right scrolling are supported')
+          else raise('Only up, down, left and right scrolling are supported')
           end
     gesture(loc)
   end
@@ -150,11 +164,7 @@ module ScreenObject
   # @return          [Boolean]
   def text_visible?(text)
     driver.no_wait if driver
-    if driver.find(text).displayed?
-      true
-    else
-      false
-    end
+    driver.find(text).displayed?
   rescue Selenium::WebDriver::Error::NoSuchElementError
     false
   end
@@ -193,20 +203,31 @@ module ScreenObject
   def drag_and_drop_element(source_locator,source_locator_value,target_locator,target_locator_value)
     l_draggable = driver.find_element(source_locator,source_locator_value)
     l_droppable = driver.find_element(target_locator,target_locator_value)
-    obj1= Appium::TouchAction.new
-    obj1.long_press(:x => l_draggable.location.x,:y => l_draggable.location.y).move_to(:x => l_droppable.location.x,:y => l_droppable.location.y).release.perform
+    obj1 = Appium::TouchAction.new
+    obj1.long_press(:x => l_draggable.location.x,:y => l_draggable.location.y)
+        .move_to(:x => l_droppable.location.x,:y => l_droppable.location.y)
+        .release
+        .perform
   end
 
+  # Hides the keyboard if is_keyboard_shown.
+  #
+  # For ios we built a work-around for the keyboard_close
+  # the basic driver strategies all return nil, so they are not working as intended
+  # https://github.com/appium/ruby_lib/issues/295 <- appium issue related to keyboard.
   def keyboard_hide
-    begin
-      driver.hide_keyboard if driver.is_keyboard_shown
-    rescue
-      false
+    return unless driver.is_keyboard_shown
+
+    if driver.driver_is_ios?
+      touch_point(driver.find_element(class: 'XCUIElementTypeKeyboard').location)
+    else
+      driver.hide_keyboard
     end
+  rescue Selenium::WebDriver::Error::NoSuchElementError
+    raise 'There was an issue locating the keyboard element.'
   end
 
   def wait_for_text(text, timeout = 30)
     wait_until(timeout,"text << #{text} >> is not visible", & ->{driver.find("#{text}").displayed? })
   end
-
 end
