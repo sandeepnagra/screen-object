@@ -69,14 +69,14 @@ module ScreenObject
       # method for returning element position and size.
       # @return [hash]
       def get_position
-        my_element = element.rect
+        ele_rec = element.rect
         {
-          start_x: my_element.x,
-          end_x: my_element.x + my_element.width,
-          start_y: my_element.y,
-          end_y: my_element.y + my_element.height,
-          height: my_element.height,
-          width: my_element.width
+          start_x: ele_rec.x,
+          end_x:   ele_rec.x + ele_rec.width,
+          start_y: ele_rec.y,
+          end_y:   ele_rec.y + ele_rec.height,
+          height:  ele_rec.height,
+          width:   ele_rec.width
         }
       rescue RuntimeError => err
         raise("Error Details: #{err}")
@@ -85,7 +85,6 @@ module ScreenObject
       def dynamic_xpath(text)
         concat_attribute = []
         element_attributes.each{|i| concat_attribute << %Q(contains(@#{i}, '#{text}'))}
-        puts "//#{locator[0]}[#{concat_attribute.join(' or ')}]"
         locator1 = "xpath~//#{locator[0]}[#{concat_attribute.join(' or ')}]"
         @locator = locator1.split("~")
         element
@@ -149,19 +148,20 @@ module ScreenObject
       # @param [duration] 1000 milliseconds
 
       def swipe_screen_element(direction = :down, duration = 1000)
-        my_element = element.rect
-        start_x = my_element.x
-        end_x = my_element.x + my_element.width
-        start_y = my_element.y
-        end_y = my_element.y + my_element.height
-        height = my_element.height
+        ele_rec = element.rect
+
+        start_x = ele_rec.x
+        end_x   = ele_rec.x + ele_rec.width
+        start_y = ele_rec.y
+        end_y   = ele_rec.y + ele_rec.height
+        height  = ele_rec.height
+
         loc = case direction
               when :up then    [end_x * 0.5, (start_y + (height * 0.2)), end_x * 0.5, (end_y - (height * 0.2)), duration]
               when :down then  [end_x * 0.5, (end_y - (height * 0.2)), start_x * 0.5, (start_y + (height * 0.3)), duration]
               when :left then  [end_x * 0.9,  end_y - (height / 2), start_x, end_y - (height / 2), duration]
               when :right then [end_x * 0.1, end_y - (height / 2), end_x * 0.9, end_y - (height / 2), duration]
-              else
-                raise('Only upwards and downwards scrolling are supported')
+              else raise("<<#{direction}>> is not a supported scroll direction")
               end
         gesture(loc)
       end
@@ -198,9 +198,9 @@ module ScreenObject
       end
 
       # Find all element children
-      # @param identifier [symbol] the identifier to search for
-      # @param name [String] element name to search for
-      # @return [Elements]
+      # @param identifier [Symbol] the identifier to search for
+      # @param name       [String] element name to search for
+      # @return          [Elements]
       def get_children(identifier, name)
         element.find_elements(identifier, name)
       end
@@ -231,13 +231,9 @@ module ScreenObject
         end
       end
 
-      def is_a_string?(argument)
-        argument.is_a? String
-      end
-
       def has_text(text)
         elements.each do |item|
-          text_value = if is_a_string? item
+          text_value = if item.is_a? String
                          if driver.device_is_android?
                            item.text.strip
                          else
@@ -246,7 +242,7 @@ module ScreenObject
                        else item.text
                        end
 
-          if is_a_string? item
+          if item.is_a? String
             text_value.casecmp?(text.strip.to_s)
           else
             text_value == text
