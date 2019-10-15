@@ -217,7 +217,7 @@ module ScreenObject
   def keyboard_hide
     return unless driver.is_keyboard_shown
 
-    if driver.driver_is_ios?
+    if driver.device_is_ios?
       touch_point(driver.find_element(class: 'XCUIElementTypeKeyboard').location)
     else
       driver.hide_keyboard
