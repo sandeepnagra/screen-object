@@ -200,14 +200,13 @@ module ScreenObject
   end
   alias_method :click_exact_text, :tap_exact_text
 
-  def drag_and_drop_element(source_locator,source_locator_value,target_locator,target_locator_value)
-    l_draggable = driver.find_element(source_locator,source_locator_value)
-    l_droppable = driver.find_element(target_locator,target_locator_value)
-    obj1 = Appium::TouchAction.new
-    obj1.long_press(:x => l_draggable.location.x,:y => l_draggable.location.y)
-        .move_to(:x => l_droppable.location.x,:y => l_droppable.location.y)
-        .release
-        .perform
+  def drag_and_drop_element(source_locator, source_locator_value, target_locator, target_locator_value)
+    loc_drag = driver.find_element(source_locator, source_locator_value).location
+    loc_drop = driver.find_element(target_locator, target_locator_value).location
+    action = Appium::TouchAction.new
+    action = action.long_press(x: loc_drag.x, y: loc_drag.y)
+    action = action.move_to(x: loc_drop.x, y: loc_drop.y)
+    action.release.perform
   end
 
   # Hides the keyboard if is_keyboard_shown.
