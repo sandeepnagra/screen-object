@@ -214,7 +214,7 @@ module ScreenObject
   # For ios we built a work-around for the keyboard_close
   # the basic driver strategies all return nil, so they are not working as intended
   # https://github.com/appium/ruby_lib/issues/295 <- appium issue related to keyboard.
-  def keyboard_hide
+  def keyboard_hide(tries = 3)
     return unless driver.is_keyboard_shown
 
     if driver.device_is_ios?
@@ -222,6 +222,7 @@ module ScreenObject
     else
       driver.hide_keyboard
     end
+    tries.zero? ? raise : keyboard_hide(tries -= 1)
   rescue Selenium::WebDriver::Error::NoSuchElementError
     raise 'There was an issue locating the keyboard element.'
   end
