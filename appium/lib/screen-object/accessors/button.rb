@@ -14,24 +14,19 @@ See the License for the specific language governing permissions and limitations 
 ***********************************************************************************************************
 =end
 
-#require_relative File.expand_path('../element',__FILE__)
-
-
 module ScreenObject
   module AppElements
     class Button < AppElements::Element
 
       def tap
-          element.click
+        element.click
       end
       alias_method :click, :tap
 
       def enabled?
-        begin
-          element.enabled?
-        rescue
-          false
-        end
+        element.enabled?
+      rescue
+        false
       end
 
      end

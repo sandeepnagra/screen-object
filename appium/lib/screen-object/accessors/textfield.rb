@@ -31,11 +31,9 @@ module ScreenObject
       end
 
       def enabled?
-        begin
-          element.enabled?
-        rescue
-          false
-        end
+        element.enabled?
+      rescue
+        false
       end
 
     end
