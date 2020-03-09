@@ -103,7 +103,7 @@ module ScreenObject
       # scroll to the first element with locator and click.
       # this method will not return any value.
       define_method("scroll_up_to_tap_#{name}") do
-        ScreenObject::AppElements::Button.new(locator).scroll_element_to_view_tap(:up)
+        ScreenObject::AppElements::Button.new(locator).scroll_element_to_tap(:up)
       end
       alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
 
@@ -299,7 +299,7 @@ module ScreenObject
       #  scroll_down_to_click_email_checkbox # This will not return any value. It will scroll on the screen until object found and click
       #                        on the object i.e. checkbox.
       define_method("scroll_down_to_tap_#{name}") do
-        ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_view_tap(:down)
+        ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_tap(:down)
       end
       alias_method :"scroll_down_to_click_#{name}", :"scroll_down_to_tap_#{name}"
 
@@ -311,7 +311,7 @@ module ScreenObject
       #  scroll_up_to_click_email_checkbox # This will not return any value. It will scroll on the screen until object found and click
       #                        on the object i.e. checkbox.
       define_method("scroll_up_to_tap_#{name}") do
-        ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_view_tap(:up)
+        ScreenObject::AppElements::CheckBox.new(locator).scroll_element_to_tap(:up)
       end
       alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
 
@@ -419,7 +419,7 @@ module ScreenObject
       #                        on the object i.e. Text.
       define_method("scroll_up_to_tap_#{name}") do
         # direction = options[:direction] || 'up'
-        ScreenObject::AppElements::Text.new(locator).scroll_element_to_view_tap(:up)
+        ScreenObject::AppElements::Text.new(locator).scroll_element_to_tap(:up)
       end
       alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
 
@@ -431,7 +431,7 @@ module ScreenObject
       #  scroll_down_to_click_first_name # This will not return any value. It will scroll on the screen until object found and click
       #                        on the object i.e. Text.
       define_method("scroll_down_to_tap_#{name}") do
-        ScreenObject::AppElements::Text.new(locator).scroll_element_to_view_tap(:down)
+        ScreenObject::AppElements::Text.new(locator).scroll_element_to_tap(:down)
       end
       alias_method :"scroll_down_to_click_#{name}", :"scroll_down_to_tap_#{name}"
       # generates method for scrolling text object to view.
@@ -583,7 +583,7 @@ module ScreenObject
       #                        on the object i.e.textField                 on the object i.e. image.
       define_method("scroll_down_to_tap_#{name}") do
         # direction = 'down'
-        ScreenObject::AppElements::TextField.new(locator).scroll_element_to_view_tap
+        ScreenObject::AppElements::TextField.new(locator).scroll_element_to_tap
       end
       alias_method :"scroll_down_to_click_#{name}",  :"scroll_down_to_tap_#{name}"
 
@@ -595,7 +595,7 @@ module ScreenObject
       #  scroll_up_to_click_welcome_textfield  # This will not return any value. It will scroll on the screen until object found and click
       #                        on the object i.e.textField.
       define_method("scroll_up_to_tap_#{name}") do
-        ScreenObject::AppElements::TextField.new(locator).scroll_element_to_view_tap(:up)
+        ScreenObject::AppElements::TextField.new(locator).scroll_element_to_tap(:up)
       end
       alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
     end
@@ -680,7 +680,7 @@ module ScreenObject
       #  scroll_down_to_click_login_image # This will not return any value. It will scroll on the screen until object found and click
       #                        on the object i.e. Image.                  on the object i.e. image.
       define_method("scroll_down_to_tap_#{name}") do
-        ScreenObject::AppElements::Image.new(locator).scroll_element_to_view_tap
+        ScreenObject::AppElements::Image.new(locator).scroll_element_to_tap
       end
       alias_method :"scroll_down_to_click_#{name}", :"scroll_down_to_tap_#{name}"
 
@@ -692,7 +692,7 @@ module ScreenObject
       #  scroll_up_to_click_login_image # This will not return any value. It will scroll on the screen until object found and click
       #                        on the object i.e. Image.
       define_method("scroll_up_to_tap_#{name}") do
-        ScreenObject::AppElements::Image.new(locator).scroll_element_to_view_tap(:up)
+        ScreenObject::AppElements::Image.new(locator).scroll_element_to_tap(:up)
       end
       alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
     end
@@ -779,7 +779,7 @@ module ScreenObject
 
       define_method("tap_#{name}") do
         # direction = options[:direction] || 'down'
-        ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_tap
+        ScreenObject::AppElements::Element.new(locator).scroll_element_to_tap
       end
       alias_method :"click_#{name}", :"tap_#{name}"
 
@@ -790,7 +790,7 @@ module ScreenObject
       #   scroll_down_to_click_login_button
 
       define_method("scroll_down_to_tap_#{name}") do
-        ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_tap
+        ScreenObject::AppElements::Element.new(locator).scroll_element_to_tap
       end
       alias_method :"scroll_down_to_click_#{name}", :"scroll_down_to_tap_#{name}"
 
@@ -801,7 +801,7 @@ module ScreenObject
       #   scroll_up_to_click_login_button
 
       define_method("scroll_up_to_tap_#{name}") do
-        ScreenObject::AppElements::Element.new(locator).scroll_element_to_view_tap(:up)
+        ScreenObject::AppElements::Element.new(locator).scroll_element_to_tap(:up)
       end
       alias_method :"scroll_up_to_click_#{name}", :"scroll_up_to_tap_#{name}"
 

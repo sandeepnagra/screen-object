@@ -28,8 +28,38 @@ module ScreenObject
                      locator.split("~")
                    elsif locator.is_a?(Hash)
                      locator.first
-                   else raise "Invalid locator type: #{locator.class}"
+                   else query(locator)
                    end
+      end
+
+      def query(*str_query)
+        converted_args = ios? ? "" : "new UiSelector()"
+        str_query.first.each do |key, value|
+          element_class = get_class_identifier(key)
+          element_id = value
+          if driver.device_is_ios?
+            query_str = converted_args.empty? ? "#{element_class}'#{element_id}'" : " AND #{element_class}'#{element_id}'"
+          else
+            element_id = (element_class.include? 'Matches') ? ".*#{value}" : value
+            query_str = ".#{element_class}(\"#{element_id}\")"
+          end
+          converted_args << query_str
+        end
+        return {predicate: converted_args} if driver.device_is_ios?
+        converted_args << ".instance(0)"
+        {uiautomator: converted_args}
+      end
+
+      def get_class_identifier(convert_id)
+        sid = convert_id
+        case sid
+        when :id          then driver.device_is_ios? ? 'name Contains' : 'resourceIdMatches'
+        when :class       then driver.device_is_ios? ? 'name=' : 'className'
+        when :description then driver.device_is_ios? ? 'name Contains' : 'description'
+        when :text        then driver.device_is_ios? ? 'label Contains' : 'text'
+        else
+          raise("#{sid} is not a valid attribute for function convert_class_identifier")
+        end
       end
 
       def driver
@@ -231,25 +261,12 @@ module ScreenObject
         end
       end
 
-      def has_text(text)
-        elements.each do |item|
-          text_value = if item.is_a? String
-                         if driver.device_is_android?
-                           item.text.strip
-                         else
-                           item.value.strip
-                         end
-                       else item.text
-                       end
-
-          if item.is_a? String
-            text_value.casecmp?(text.strip.to_s)
-          else
-            text_value == text
-          end
-        end
+      def has_text(dynamic_text)
+        query_txt = Hash[*locator.collect { |v| v } ].to_h.merge! text: "#{dynamic_text}"
+        driver.find_element(query(query_txt)).displayed?
+      rescue
+        false
       end
-
     end
   end
 end

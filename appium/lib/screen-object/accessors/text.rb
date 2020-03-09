@@ -28,16 +28,15 @@ module ScreenObject
       alias_method :click, :tap
 
       def dynamic_text_exists? dynamic_text
-        dynamic_xpath(dynamic_text).displayed?
+        query_txt = Hash[*locator.collect { |v| v } ].to_h.merge! text: "#{dynamic_text}"
+        driver.find_element(query(query_txt)).displayed?
       rescue
         false
       end
 
       def dynamic_text dynamic_text
-        dynamic_xpath(dynamic_text).displayed?
-        text
-      rescue
-        false
+        query_txt = Hash[*locator.collect { |v| v } ].to_h.merge! text: "#{dynamic_text}"
+        driver.find_element(query(query_txt))
       end
 
     end
